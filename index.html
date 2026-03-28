@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Functional Fretboard – Vertical Edition</title>
@@ -73,6 +75,11 @@
       border: 1px solid rgba(31, 41, 55, 0.9);
     }
 
+    .control-group span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
     select {
       background: #020617;
       border-radius: 999px;
@@ -97,9 +104,6 @@
 
     .toggle input { accent-color: var(--accent); }
 
-    /* ============================
-       LAYOUT
-       ============================ */
     main {
       flex: 1;
       display: flex;
@@ -123,10 +127,7 @@
       padding: 1rem;
     }
 
-    /* ============================
-       VERTICAL FRETBOARD
-       ============================ */
-
+    /* STRING LABEL ROW */
     .string-label-row {
       display: grid;
       grid-template-columns: 60px repeat(6, minmax(0, 110px));
@@ -139,6 +140,7 @@
       font-weight: 600;
     }
 
+    /* FRETBOARD GRID */
     .fretboard-grid {
       display: grid;
       grid-template-columns: 60px repeat(6, minmax(0, 110px));
@@ -178,31 +180,33 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: #000;
+      z-index: 2;
     }
 
     .note-meta {
       position: absolute;
       bottom: 2px;
-      right: 2px;
+      left: 4px;
       font-size: 0.55rem;
       color: var(--muted);
       font-family: var(--font-mono);
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .note-solfege-tag,
-    .note-interval-tag,
-    .note-cycle-tag {
+    .note-solfege-tag {
       position: absolute;
       top: 2px;
       right: 2px;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.7);
       padding: 1px 4px;
       border-radius: 3px;
       font-size: 0.55rem;
       color: #fff;
+      font-family: var(--font-mono);
     }
 
     .note-root-outline { outline: 2px solid var(--root-outline); outline-offset: -2px; }
@@ -211,9 +215,6 @@
     .note-chord-root { outline: 2px solid var(--root-outline); outline-offset: -2px; }
     .note-chromatic-outline { outline: 2px solid var(--chromatic-outline); outline-offset: -2px; }
 
-    /* ============================
-       DOTS (Piece 4)
-       ============================ */
     .note-dot {
       position: absolute;
       width: 7px;
@@ -228,37 +229,79 @@
     .note-dot.top-left { top: 2px; left: 2px; }
     .note-dot.top-right { top: 2px; right: 2px; }
     .note-dot.bottom-left { bottom: 2px; left: 2px; }
+    /* RESPONSIVE LAYOUT */
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .tabs-card { order: 2; }
+      .fretboard-card { order: 1; }
+    }
 
+    @media (max-width: 700px) {
+      .string-label-row,
+      .fretboard-grid {
+        grid-template-columns: 40px repeat(6, minmax(0, 1fr));
+      }
+      .note-pill {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+      }
+      .note-meta {
+        font-size: 0.5rem;
+        left: 2px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .string-label-row,
+      .fretboard-grid {
+        grid-template-columns: 32px repeat(6, minmax(0, 1fr));
+      }
+      .note-pill {
+        font-size: 0.55rem;
+        padding: 1px 3px;
+      }
+      .note-meta {
+        font-size: 0.45rem;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="title-block">
       <div class="title-main">Functional Fretboard</div>
-      <div class="title-sub">
-        Vertical Edition • 24 Frets • Hz • Cents • Solfege • Dots
-      </div>
+      <div class="title-sub">Vertical • 24 Frets • Hz • Cents • Movable Do / La</div>
     </div>
 
     <div class="controls-row">
-
       <div class="control-group">
-        <span class="control-label">Root</span>
+        <span>Root</span>
         <select id="rootSelect"></select>
       </div>
 
       <div class="control-group">
-        <span class="control-label">Scale / Mode</span>
+        <span>Scale</span>
         <select id="scaleSelect"></select>
       </div>
 
       <div class="control-group">
-        <span class="control-label">Triad</span>
+        <span>Triad</span>
         <select id="triadSelect"></select>
       </div>
 
       <div class="control-group">
-        <span class="control-label">Cycle</span>
+        <span>Cycle</span>
         <select id="cycleSelect">
           <option value="none">None</option>
           <option value="cycle5">Cycle of 5ths</option>
@@ -269,7 +312,7 @@
       </div>
 
       <div class="control-group">
-        <span class="control-label">Chromatic</span>
+        <span>Chromatic</span>
         <select id="chromaticSelect">
           <option value="none">None</option>
           <option value="1">m2 (1)</option>
@@ -290,69 +333,41 @@
       <div class="control-group">
         <label class="toggle">
           <input type="checkbox" id="toggleShowScale" checked />
-          <span>Show Scale</span>
+          <span>Scale</span>
         </label>
-
         <label class="toggle">
           <input type="checkbox" id="toggleShowNoteNames" checked />
-          <span>Note Names</span>
+          <span>Names</span>
         </label>
-
         <label class="toggle">
           <input type="checkbox" id="toggleShowOctaves" checked />
           <span>Octaves</span>
         </label>
-
         <label class="toggle">
           <input type="checkbox" id="toggleShowHz" checked />
           <span>Hz</span>
         </label>
-
         <label class="toggle">
           <input type="checkbox" id="toggleShowCents" checked />
           <span>Cents</span>
         </label>
-
         <label class="toggle">
           <input type="checkbox" id="toggleMovableDo" checked />
           <span>Movable Do</span>
         </label>
-
         <label class="toggle">
-          <input type="checkbox" id="toggleMovableLa" />
+          <input type="checkbox" id="toggleMovableLa" checked />
           <span>Movable La</span>
         </label>
       </div>
-
     </div>
   </header>
 
   <main>
     <div class="layout">
-
-      <!-- ===========================
-           FRETBOARD CARD
-      ============================ -->
       <section class="fretboard-card">
-
-        <div class="fretboard-header">
-          <div>
-            <div class="fretboard-title">Fretboard View</div>
-            <div class="fretboard-subtitle">
-              Vertical • 24 Frets • Equal Temperament • A4 = 440 Hz
-            </div>
-          </div>
-
-          <div class="fretboard-meta" id="fretboardMeta">
-            Root: – • Scale: – • Triad: – • Cycle: – • Chromatic: –
-          </div>
-        </div>
-
-        <!-- ===========================
-             STRING LABEL ROW (TOP)
-        ============================ -->
         <div class="string-label-row">
-          <div></div> <!-- empty corner above fret numbers -->
+          <div></div>
           <div>E</div>
           <div>A</div>
           <div>D</div>
@@ -361,175 +376,100 @@
           <div>E</div>
         </div>
 
-        <!-- ===========================
-             FRETBOARD GRID (VERTICAL)
-        ============================ -->
         <div class="fretboard-grid" id="fretboardGrid"></div>
-
       </section>
 
-      <!-- ===========================
-           TABS CARD
-      ============================ -->
       <section class="tabs-card">
-
         <div class="tabs-header">
-          <button class="tab-button active" data-tab="tab-scales">
-            Scales & Modes
-          </button>
-
-          <button class="tab-button" data-tab="tab-theory">
-            Theory & Engines
-          </button>
-
-          <button class="tab-button" data-tab="tab-triads">
-            Triads & Chords
-          </button>
-
-          <button class="tab-button" data-tab="tab-intonation">
-            Intonation & Hz
-          </button>
+          <button class="tab-button active" data-tab="tab-scales">Scales</button>
+          <button class="tab-button" data-tab="tab-theory">Theory</button>
+          <button class="tab-button" data-tab="tab-triads">Triads</button>
+          <button class="tab-button" data-tab="tab-intonation">Intonation</button>
         </div>
 
         <div class="tabs-body">
-
-          <div id="tab-scales" class="tab-panel active">
-            <!-- Filled dynamically -->
-          </div>
-
-          <div id="tab-theory" class="tab-panel">
-
-            <!-- ===========================
-                 DOTS & OVERLAYS ACCORDION
-            ============================ -->
-            <div class="accordion">
-              <div class="accordion-header">
-                <div>Dots & Overlays</div>
-                <span>3‑dot system</span>
-              </div>
-
-              <div class="accordion-content">
-                <label class="toggle-row">
-                  <input type="checkbox" id="toggleTonalDots" checked>
-                  <span>Tonal Function Dots (●)</span>
-                </label>
-
-                <label class="toggle-row">
-                  <input type="checkbox" id="toggleModeDots" checked>
-                  <span>Mode Dots (◆)</span>
-                </label>
-
-                <label class="toggle-row">
-                  <input type="checkbox" id="toggleFamilyDots" checked>
-                  <span>Family Dots (■)</span>
-                </label>
-              </div>
-            </div>
-
-          </div>
-
-          <div id="tab-triads" class="tab-panel">
-            <!-- Filled dynamically -->
-          </div>
-
-          <div id="tab-intonation" class="tab-panel">
-            <!-- Filled dynamically -->
-          </div>
-
+          <div id="tab-scales" class="tab-panel active"></div>
+          <div id="tab-theory" class="tab-panel"></div>
+          <div id="tab-triads" class="tab-panel"></div>
+          <div id="tab-intonation" class="tab-panel"></div>
         </div>
       </section>
-
     </div>
   </main>
-</body>
 <script>
-/* ============================================================
-   PART 3 — FULL JAVASCRIPT ENGINE
-   Vertical Fretboard • 24 Frets • Hz • Cents • Solfege • Dots
-   ============================================================ */
-
-/* ------------------------------------------------------------
+/* ============================
    NOTE + FREQUENCY ENGINE
------------------------------------------------------------- */
-const NOTES = [
-  "C", "C#", "D", "D#", "E", "F",
-  "F#", "G", "G#", "A", "A#", "B"
-];
+============================ */
+const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
-function noteIndex(note) {
-  return NOTES.indexOf(note);
-}
+function noteIndex(n){ return NOTES.indexOf(n); }
+function noteAtIndex(i){ return NOTES[(i + 1200) % 12]; }
 
-function noteAtIndex(i) {
-  return NOTES[(i + 1200) % 12];
-}
-
-function frequencyFor(note, octave) {
-  const semitoneIndex = noteIndex(note);
-  const midi = (octave + 1) * 12 + semitoneIndex;
+function frequencyFor(note, octave){
+  const idx = noteIndex(note);
+  const midi = (octave + 1) * 12 + idx;
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-function centsFromEqualTemperament(freq) {
-  const nearest = 440 * Math.pow(2, Math.round(12 * Math.log2(freq / 440)) / 12);
-  return Math.round(1200 * Math.log2(freq / nearest));
+function centsFromEqualTemperament(freq){
+  return 0; // ET grid reference
 }
 
-/* ------------------------------------------------------------
-   TUNING (STANDARD)
------------------------------------------------------------- */
+/* ============================
+   TUNING
+============================ */
 const TUNING = [
-  { note: "E", octave: 2 },
-  { note: "A", octave: 2 },
-  { note: "D", octave: 3 },
-  { note: "G", octave: 3 },
-  { note: "B", octave: 3 },
-  { note: "E", octave: 4 }
+  { note:"E", octave:2 },
+  { note:"A", octave:2 },
+  { note:"D", octave:3 },
+  { note:"G", octave:3 },
+  { note:"B", octave:3 },
+  { note:"E", octave:4 }
 ];
 
-/* ------------------------------------------------------------
-   BUILD FRETBOARD DATA (VERTICAL)
------------------------------------------------------------- */
+/* ============================
+   BUILD FRETBOARD DATA
+============================ */
 const fretboard = [];
 
-for (let fret = 0; fret <= 24; fret++) {
-  const row = [];
-  for (let s = 0; s < 6; s++) {
-    const open = TUNING[s];
+for(let fret=0; fret<=24; fret++){
+  const row=[];
+  for(let s=0; s<6; s++){
+    const open=TUNING[s];
     const idx = noteIndex(open.note) + fret;
     const note = noteAtIndex(idx);
-    const octave = open.octave + Math.floor((noteIndex(open.note) + fret) / 12);
+    const octave = open.octave + Math.floor((noteIndex(open.note)+fret)/12);
     const freq = frequencyFor(note, octave);
     const cents = centsFromEqualTemperament(freq);
 
     row.push({
-      string: s,
+      string:s,
       fret,
       note,
       octave,
-      freq: freq.toFixed(2),
+      freq:freq.toFixed(2),
       cents
     });
   }
   fretboard.push(row);
 }
 
-/* ------------------------------------------------------------
-   SCALE LIBRARY (PIECE 3.5)
------------------------------------------------------------- */
+/* ============================
+   SCALES
+============================ */
 const SCALES = {
-  "Ionian (Major)":       [0,2,4,5,7,9,11],
-  "Dorian":               [0,2,3,5,7,9,10],
-  "Phrygian":             [0,1,3,5,7,8,10],
-  "Lydian":               [0,2,4,6,7,9,11],
-  "Mixolydian":           [0,2,4,5,7,9,10],
+  "Ionian (Major)": [0,2,4,5,7,9,11],
+  "Dorian": [0,2,3,5,7,9,10],
+  "Phrygian": [0,1,3,5,7,8,10],
+  "Lydian": [0,2,4,6,7,9,11],
+  "Mixolydian": [0,2,4,5,7,9,10],
   "Aeolian (Natural Minor)": [0,2,3,5,7,8,10],
-  "Locrian":              [0,1,3,5,6,8,10]
+  "Locrian": [0,1,3,5,6,8,10]
 };
 
-/* ------------------------------------------------------------
+/* ============================
    TRIADS
------------------------------------------------------------- */
+============================ */
 const TRIADS = {
   "none": [],
   "Major": [0,4,7],
@@ -540,9 +480,9 @@ const TRIADS = {
   "Sus4": [0,5,7]
 };
 
-/* ------------------------------------------------------------
+/* ============================
    CYCLES
------------------------------------------------------------- */
+============================ */
 const CYCLES = {
   "none": [],
   "cycle5": [0,7,2,9,4,11,6,1,8,3,10,5],
@@ -551,76 +491,102 @@ const CYCLES = {
   "min3": [0,3,6,9]
 };
 
-/* ------------------------------------------------------------
-   CHROMATIC INTERVALS
------------------------------------------------------------- */
-function chromaticSet(n) {
-  if (n === "none") return [];
+/* ============================
+   CHROMATIC
+============================ */
+function chromaticSet(n){
+  if(n==="none") return [];
   return [Number(n)];
 }
 
-/* ------------------------------------------------------------
-   SOLFEGE
------------------------------------------------------------- */
-const SOLFEGE_DO = ["Do","Re","Mi","Fa","So","La","Ti"];
-const SOLFEGE_LA = ["La","Ti","Do","Re","Mi","Fa","So"];
+/* ============================
+   SOLFEGE ENGINE
+============================ */
+function getSolfege(interval, scaleName, scale, movableDo, movableLa) {
+  const degreeIndex = scale.indexOf(interval);
+  if (degreeIndex === -1) return "";
 
-/* ------------------------------------------------------------
+  const isMajor =
+    scaleName.includes("Ionian") ||
+    scaleName.includes("Lydian") ||
+    scaleName.includes("Mixolydian") ||
+    scaleName.includes("Major");
+
+  const isMinor =
+    scaleName.includes("Aeolian") ||
+    scaleName.includes("Dorian") ||
+    scaleName.includes("Phrygian") ||
+    scaleName.includes("Locrian") ||
+    scaleName.includes("Minor");
+
+  if (isMajor && movableDo) {
+    const DO = ["Do","Re","Mi","Fa","So","La","Ti"];
+    return DO[degreeIndex];
+  }
+
+  if (isMinor && movableLa) {
+    const LA = ["La","Ti","Do","Re","Mi","Fa","So"];
+    return LA[degreeIndex];
+  }
+
+  return "";
+}
+
+/* ============================
    UI POPULATION
------------------------------------------------------------- */
-function populateSelectors() {
-  const rootSel = document.getElementById("rootSelect");
-  NOTES.forEach(n => {
-    const opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = n;
+============================ */
+function populateSelectors(){
+  const rootSel=document.getElementById("rootSelect");
+  NOTES.forEach(n=>{
+    const opt=document.createElement("option");
+    opt.value=n;
+    opt.textContent=n;
     rootSel.appendChild(opt);
   });
 
-  const scaleSel = document.getElementById("scaleSelect");
-  Object.keys(SCALES).forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = s;
-    opt.textContent = s;
+  const scaleSel=document.getElementById("scaleSelect");
+  Object.keys(SCALES).forEach(s=>{
+    const opt=document.createElement("option");
+    opt.value=s;
+    opt.textContent=s;
     scaleSel.appendChild(opt);
   });
 
-  const triadSel = document.getElementById("triadSelect");
-  Object.keys(TRIADS).forEach(t => {
-    const opt = document.createElement("option");
-    opt.value = t;
-    opt.textContent = t;
+  const triadSel=document.getElementById("triadSelect");
+  Object.keys(TRIADS).forEach(t=>{
+    const opt=document.createElement("option");
+    opt.value=t;
+    opt.textContent=t;
     triadSel.appendChild(opt);
   });
 }
 
-/* ------------------------------------------------------------
-   RENDER FRETBOARD (VERTICAL)
------------------------------------------------------------- */
-function renderFretboard() {
-  const grid = document.getElementById("fretboardGrid");
-  grid.innerHTML = "";
+/* ============================
+   RENDER GRID
+============================ */
+function renderFretboard(){
+  const grid=document.getElementById("fretboardGrid");
+  grid.innerHTML="";
 
-  for (let fret = 0; fret <= 24; fret++) {
-    const fretNum = document.createElement("div");
-    fretNum.className = "fret-number";
-    fretNum.textContent = fret;
-    grid.appendChild(fretNum);
+  for(let fret=0; fret<=24; fret++){
+    const num=document.createElement("div");
+    num.className="fret-number";
+    num.textContent=fret;
+    grid.appendChild(num);
 
-    for (let s = 0; s < 6; s++) {
-      const cell = document.createElement("div");
-      cell.className = "note-cell";
-      cell.dataset.fret = fret;
-      cell.dataset.string = s;
+    for(let s=0; s<6; s++){
+      const cell=document.createElement("div");
+      cell.className="note-cell";
+      cell.dataset.fret=fret;
+      cell.dataset.string=s;
       grid.appendChild(cell);
     }
   }
 }
-
-/* ------------------------------------------------------------
-   UPDATE FRETBOARD (APPLY ALL ENGINES)
------------------------------------------------------------- */
-function updateFretboard() {
+/* ============================
+   UPDATE FRETBOARD
+============================ */
+function updateFretboard(){
   const root = document.getElementById("rootSelect").value;
   const scaleName = document.getElementById("scaleSelect").value;
   const triadName = document.getElementById("triadSelect").value;
@@ -642,14 +608,11 @@ function updateFretboard() {
 
   const rootIndex = noteIndex(root);
 
-  document.getElementById("fretboardMeta").textContent =
-    `Root: ${root} • Scale: ${scaleName} • Triad: ${triadName} • Cycle: ${cycleName} • Chromatic: ${chromatic}`;
-
   const cells = document.querySelectorAll(".note-cell");
 
-  cells.forEach(cell => {
-    cell.innerHTML = "";
-    cell.className = "note-cell";
+  cells.forEach(cell=>{
+    cell.innerHTML="";
+    cell.className="note-cell";
 
     const fret = Number(cell.dataset.fret);
     const string = Number(cell.dataset.string);
@@ -661,33 +624,30 @@ function updateFretboard() {
     if (showNames) {
       const pill = document.createElement("div");
       pill.className = "note-pill";
-      pill.textContent = data.note;
+      pill.textContent = showOct ? `${data.note}${data.octave}` : data.note;
       pill.style.background = showScale && scale.includes(interval)
         ? "#22c55e"
         : "#38bdf8";
       cell.appendChild(pill);
     }
 
-    /* META (OCTAVE / HZ / CENTS) */
-    if (showOct || showHz || showCents) {
+    /* META (Hz + cents) */
+    if (showHz || showCents) {
       const meta = document.createElement("div");
       meta.className = "note-meta";
 
-      if (showOct) meta.innerHTML += `${data.octave}<br>`;
-      if (showHz) meta.innerHTML += `${data.freq}Hz<br>`;
-      if (showCents) meta.innerHTML += `${data.cents}¢`;
+      if (showHz) meta.innerHTML += `${data.freq}Hz`;
+      if (showCents) meta.innerHTML += (showHz ? "<br>" : "") + `${data.cents}¢`;
 
       cell.appendChild(meta);
     }
 
-    /* SOLFEGE */
-    if (movableDo || movableLa) {
+    /* SOLFEGE (Movable Do / La) */
+    const sol = getSolfege(interval, scaleName, scale, movableDo, movableLa);
+    if (sol) {
       const tag = document.createElement("div");
       tag.className = "note-solfege-tag";
-
-      if (movableDo) tag.textContent = SOLFEGE_DO[scale.indexOf(interval)] || "";
-      if (movableLa) tag.textContent = SOLFEGE_LA[scale.indexOf(interval)] || "";
-
+      tag.textContent = sol;
       cell.appendChild(tag);
     }
 
@@ -698,57 +658,48 @@ function updateFretboard() {
     if (triad[0] === interval) cell.classList.add("note-chord-root");
     if (chroma.includes(interval)) cell.classList.add("note-chromatic-outline");
 
-    /* DOTS */
-    if (document.getElementById("toggleTonalDots").checked) {
-      const dot = document.createElement("div");
-      dot.className = "note-dot circle top-left";
-      dot.style.background = "#f97316";
-      cell.appendChild(dot);
-    }
+    /* DOTS (simple always-on example) */
+    const dot1 = document.createElement("div");
+    dot1.className = "note-dot circle top-left";
+    dot1.style.background = "#f97316";
+    cell.appendChild(dot1);
 
-    if (document.getElementById("toggleModeDots").checked) {
-      const dot = document.createElement("div");
-      dot.className = "note-dot diamond top-right";
-      dot.style.background = "#22c55e";
-      cell.appendChild(dot);
-    }
+    const dot2 = document.createElement("div");
+    dot2.className = "note-dot diamond top-right";
+    dot2.style.background = "#22c55e";
+    cell.appendChild(dot2);
 
-    if (document.getElementById("toggleFamilyDots").checked) {
-      const dot = document.createElement("div");
-      dot.className = "note-dot square bottom-left";
-      dot.style.background = "#a78bfa";
-      cell.appendChild(dot);
-    }
+    const dot3 = document.createElement("div");
+    dot3.className = "note-dot square bottom-left";
+    dot3.style.background = "#a78bfa";
+    cell.appendChild(dot3);
   });
 }
 
-/* ------------------------------------------------------------
-   TABS + ACCORDIONS
------------------------------------------------------------- */
-document.addEventListener("click", e => {
+/* ============================
+   TABS (minimal wiring)
+============================ */
+document.addEventListener("click", e=>{
   if (e.target.classList.contains("tab-button")) {
-    document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-button").forEach(b=>b.classList.remove("active"));
     e.target.classList.add("active");
 
     const tab = e.target.dataset.tab;
-    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
     document.getElementById(tab).classList.add("active");
-  }
-
-  if (e.target.closest(".accordion-header")) {
-    const acc = e.target.closest(".accordion");
-    acc.classList.toggle("open");
   }
 });
 
-/* ------------------------------------------------------------
+/* ============================
    INIT
------------------------------------------------------------- */
+============================ */
 populateSelectors();
 renderFretboard();
 updateFretboard();
 
-document.querySelectorAll("select, input[type=checkbox]").forEach(el => {
+document.querySelectorAll("select, input[type=checkbox]").forEach(el=>{
   el.addEventListener("change", updateFretboard);
 });
 </script>
+</body>
+</html>
