@@ -21,6 +21,7 @@
       --root-outline: #f97316;
       --scale-outline: #22c55e;
       --chromatic-outline: #a78bfa;
+      --triad-outline: #ffffff;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
       --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
@@ -169,7 +170,7 @@
       background: var(--cell-bg);
       border-bottom: 1px solid var(--grid-border);
       border-right: 1px solid var(--grid-border);
-      transition: background 0.15s;
+      transition: background 0.15s ease, outline-color 0.15s ease;
     }
 
     .note-cell:hover { background: var(--cell-hover); }
@@ -182,6 +183,7 @@
       color: #000;
       z-index: 2;
       white-space: nowrap;
+      transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
     }
 
     /* Hz bottom-left */
@@ -210,7 +212,7 @@
       white-space: nowrap;
     }
 
-    /* Interval cents top-left (only when movable scale is meaningful) */
+    /* Interval cents top-left */
     .note-int-cents {
       position: absolute;
       top: 2px;
@@ -220,11 +222,19 @@
       font-family: var(--font-mono);
       pointer-events: none;
       white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .note-int-cents.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .note-root-outline { outline: 2px solid var(--root-outline); outline-offset: -2px; }
     .note-scale-outline { outline: 2px solid var(--scale-outline); outline-offset: -2px; }
-    .note-chord-outline { outline: 2px solid #fff; outline-offset: -2px; }
+    .note-chord-outline { outline: 2px solid var(--triad-outline); outline-offset: -2px; }
     .note-chord-root { outline: 2px solid var(--root-outline); outline-offset: -2px; }
     .note-chromatic-outline { outline: 2px solid var(--chromatic-outline); outline-offset: -2px; }
 
@@ -233,6 +243,7 @@
       width: 7px;
       height: 7px;
       pointer-events: none;
+      transition: background 0.15s ease;
     }
 
     .note-dot.circle { border-radius: 50%; }
@@ -242,6 +253,119 @@
     .note-dot.top-left { top: 2px; left: 2px; }
     .note-dot.top-right { top: 2px; right: 2px; }
     .note-dot.bottom-left { bottom: 2px; left: 2px; }
+
+    /* Tabs + theory panel */
+    .tabs-header {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.8rem;
+      background: #020617;
+      border: 1px solid #1f2937;
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .tab-button.active {
+      background: #0f172a;
+      color: var(--text);
+      border-color: var(--accent-soft);
+    }
+
+    .tabs-body {
+      margin-top: 0.5rem;
+    }
+
+    .tab-panel {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Collapsible sections inside theory panel */
+    .collapsible-section {
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      background: #020617;
+    }
+
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.35rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--text);
+      background: #020617;
+    }
+
+    .collapsible-header span.label {
+      font-weight: 500;
+    }
+
+    .collapsible-header span.chevron {
+      font-size: 0.7rem;
+      color: var(--muted);
+      transition: transform 0.15s ease;
+    }
+
+    .collapsible-header.open span.chevron {
+      transform: rotate(90deg);
+    }
+
+    .collapsible-body {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+      transition: max-height 0.2s ease, padding-top 0.2s ease, padding-bottom 0.2s ease;
+    }
+
+    .collapsible-body.open {
+      padding-top: 0.35rem;
+      padding-bottom: 0.4rem;
+    }
+
+    .theory-swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .theory-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid #111827;
+    }
+
+    .panel-fade {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .panel-fade.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
     /* RESPONSIVE LAYOUT */
     @media (max-width: 900px) {
       .layout {
@@ -399,7 +523,7 @@
           <button class="tab-button" data-tab="tab-intonation">Intonation</button>
         </div>
 
-        <div class="tabs-body">
+        <div class="tabs-body panel-fade active" id="tabsBody">
           <div id="tab-scales" class="tab-panel active"></div>
           <div id="tab-theory" class="tab-panel"></div>
           <div id="tab-triads" class="tab-panel"></div>
@@ -589,153 +713,3 @@ function renderFretboard(){
     }
   }
 }
-/* ============================
-   UPDATE FRETBOARD
-============================ */
-function updateFretboard(){
-  const root = document.getElementById("rootSelect").value;
-  const scaleName = document.getElementById("scaleSelect").value;
-  const triadName = document.getElementById("triadSelect").value;
-  const cycleName = document.getElementById("cycleSelect").value;
-  const chromatic = document.getElementById("chromaticSelect").value;
-
-  const showScale = document.getElementById("toggleShowScale").checked;
-  const showNames = document.getElementById("toggleShowNoteNames").checked;
-  const showOct = document.getElementById("toggleShowOctaves").checked;
-  const showHz = document.getElementById("toggleShowHz").checked;
-  const showAbsCents = document.getElementById("toggleShowAbsCents").checked;
-  const showIntCents = document.getElementById("toggleShowIntCents").checked;
-
-  const scale = SCALES[scaleName];
-  const triad = TRIADS[triadName];
-  const cycle = CYCLES[cycleName];
-  const chroma = chromaticSet(chromatic);
-
-  const rootIndex = noteIndex(root);
-
-  const isMajor =
-    scaleName.includes("Ionian") ||
-    scaleName.includes("Lydian") ||
-    scaleName.includes("Mixolydian") ||
-    scaleName.includes("Major");
-
-  const isMinor =
-    scaleName.includes("Aeolian") ||
-    scaleName.includes("Dorian") ||
-    scaleName.includes("Phrygian") ||
-    scaleName.includes("Locrian") ||
-    scaleName.includes("Minor");
-
-  const cells = document.querySelectorAll(".note-cell");
-
-  cells.forEach(cell=>{
-    cell.innerHTML="";
-    cell.className="note-cell";
-
-    const fret = Number(cell.dataset.fret);
-    const string = Number(cell.dataset.string);
-    const data = fretboard[fret][string];
-
-    const intervalSemitones =
-      (noteIndex(data.note) - rootIndex + 12) % 12;
-
-    const intervalCents = intervalSemitones * 100;
-    const absoluteCents = noteIndex(data.note) * 100;
-
-    const inScale = scale.includes(intervalSemitones);
-    const sol = inScale ? getSolfege(intervalSemitones, scaleName, scale) : "";
-
-    /* NOTE PILL (note + octave + solfege to the right) */
-    if (showNames) {
-      const pill = document.createElement("div");
-      pill.className = "note-pill";
-
-      if (showOct) {
-        pill.textContent = sol ? `${data.note}${data.octave} ${sol}` : `${data.note}${data.octave}`;
-      } else {
-        pill.textContent = sol ? `${data.note} ${sol}` : data.note;
-      }
-
-      pill.style.background = showScale && inScale
-        ? "#22c55e"
-        : "#38bdf8";
-
-      cell.appendChild(pill);
-    }
-
-    /* INTERVAL CENTS (top-left) – only meaningful when scale is active */
-    if (showIntCents && inScale && (isMajor || isMinor)) {
-      const ic = document.createElement("div");
-      ic.className = "note-int-cents";
-      ic.textContent = `${intervalCents}¢`;
-      cell.appendChild(ic);
-    }
-
-    /* HZ (bottom-left) */
-    if (showHz) {
-      const hz = document.createElement("div");
-      hz.className = "note-hz";
-      hz.textContent = `${data.freq}Hz`;
-      cell.appendChild(hz);
-    }
-
-    /* ABSOLUTE CENTS (bottom-center, always fixed per pitch class) */
-    if (showAbsCents) {
-      const abs = document.createElement("div");
-      abs.className = "note-abs-cents";
-      abs.textContent = `${absoluteCents}¢`;
-      cell.appendChild(abs);
-    }
-
-    /* OUTLINES */
-    if (intervalSemitones === 0) cell.classList.add("note-root-outline");
-    if (showScale && inScale) cell.classList.add("note-scale-outline");
-    if (triad.includes(intervalSemitones)) cell.classList.add("note-chord-outline");
-    if (triad[0] === intervalSemitones) cell.classList.add("note-chord-root");
-    if (chroma.includes(intervalSemitones)) cell.classList.add("note-chromatic-outline");
-
-    /* DOTS (simple always-on example) */
-    const dot1 = document.createElement("div");
-    dot1.className = "note-dot circle top-left";
-    dot1.style.background = "#f97316";
-    cell.appendChild(dot1);
-
-    const dot2 = document.createElement("div");
-    dot2.className = "note-dot diamond top-right";
-    dot2.style.background = "#22c55e";
-    cell.appendChild(dot2);
-
-    const dot3 = document.createElement("div");
-    dot3.className = "note-dot square bottom-left";
-    dot3.style.background = "#a78bfa";
-    cell.appendChild(dot3);
-  });
-}
-
-/* ============================
-   TABS (minimal wiring)
-============================ */
-document.addEventListener("click", e=>{
-  if (e.target.classList.contains("tab-button")) {
-    document.querySelectorAll(".tab-button").forEach(b=>b.classList.remove("active"));
-    e.target.classList.add("active");
-
-    const tab = e.target.dataset.tab;
-    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-    document.getElementById(tab).classList.add("active");
-  }
-});
-
-/* ============================
-   INIT
-============================ */
-populateSelectors();
-renderFretboard();
-updateFretboard();
-
-document.querySelectorAll("select, input[type=checkbox]").forEach(el=>{
-  el.addEventListener("change", updateFretboard);
-});
-</script>
-</body>
-</html>
