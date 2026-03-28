@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Functional Fretboard – Vertical Edition</title>
+  <title>Functional Fretboard – Movable Do / La</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -181,32 +181,45 @@
       font-weight: 600;
       color: #000;
       z-index: 2;
+      white-space: nowrap;
     }
 
-    .note-meta {
+    /* Hz bottom-left */
+    .note-hz {
       position: absolute;
       bottom: 2px;
       left: 4px;
       font-size: 0.55rem;
       color: var(--muted);
       font-family: var(--font-mono);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
       pointer-events: none;
-      z-index: 1;
+      white-space: nowrap;
     }
 
-    .note-solfege-tag {
+    /* Absolute cents bottom-center */
+    .note-abs-cents {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      pointer-events: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Interval cents top-left (only when movable scale is meaningful) */
+    .note-int-cents {
       position: absolute;
       top: 2px;
-      right: 2px;
-      background: rgba(0,0,0,0.7);
-      padding: 1px 4px;
-      border-radius: 3px;
+      left: 4px;
       font-size: 0.55rem;
-      color: #fff;
+      color: var(--muted);
       font-family: var(--font-mono);
+      pointer-events: none;
+      white-space: nowrap;
     }
 
     .note-root-outline { outline: 2px solid var(--root-outline); outline-offset: -2px; }
@@ -247,9 +260,10 @@
         font-size: 0.65rem;
         padding: 1px 4px;
       }
-      .note-meta {
+      .note-hz,
+      .note-abs-cents,
+      .note-int-cents {
         font-size: 0.5rem;
-        left: 2px;
       }
     }
 
@@ -262,7 +276,9 @@
         font-size: 0.55rem;
         padding: 1px 3px;
       }
-      .note-meta {
+      .note-hz,
+      .note-abs-cents,
+      .note-int-cents {
         font-size: 0.45rem;
       }
       header {
@@ -281,7 +297,7 @@
   <header>
     <div class="title-block">
       <div class="title-main">Functional Fretboard</div>
-      <div class="title-sub">Vertical • 24 Frets • Hz • Cents • Movable Do / La</div>
+      <div class="title-sub">Vertical • 24 Frets • Hz • Absolute Cents • Movable Do / La</div>
     </div>
 
     <div class="controls-row">
@@ -348,16 +364,12 @@
           <span>Hz</span>
         </label>
         <label class="toggle">
-          <input type="checkbox" id="toggleShowCents" checked />
-          <span>Cents</span>
+          <input type="checkbox" id="toggleShowAbsCents" checked />
+          <span>Abs¢</span>
         </label>
         <label class="toggle">
-          <input type="checkbox" id="toggleMovableDo" checked />
-          <span>Movable Do</span>
-        </label>
-        <label class="toggle">
-          <input type="checkbox" id="toggleMovableLa" checked />
-          <span>Movable La</span>
+          <input type="checkbox" id="toggleShowIntCents" checked />
+          <span>Int¢</span>
         </label>
       </div>
     </div>
@@ -411,10 +423,6 @@ function frequencyFor(note, octave){
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-function centsFromEqualTemperament(freq){
-  return 0; // ET grid reference
-}
-
 /* ============================
    TUNING
 ============================ */
@@ -440,15 +448,13 @@ for(let fret=0; fret<=24; fret++){
     const note = noteAtIndex(idx);
     const octave = open.octave + Math.floor((noteIndex(open.note)+fret)/12);
     const freq = frequencyFor(note, octave);
-    const cents = centsFromEqualTemperament(freq);
 
     row.push({
       string:s,
       fret,
       note,
       octave,
-      freq:freq.toFixed(2),
-      cents
+      freq:freq.toFixed(2)
     });
   }
   fretboard.push(row);
@@ -502,8 +508,8 @@ function chromaticSet(n){
 /* ============================
    SOLFEGE ENGINE
 ============================ */
-function getSolfege(interval, scaleName, scale, movableDo, movableLa) {
-  const degreeIndex = scale.indexOf(interval);
+function getSolfege(intervalSemitones, scaleName, scale) {
+  const degreeIndex = scale.indexOf(intervalSemitones);
   if (degreeIndex === -1) return "";
 
   const isMajor =
@@ -519,12 +525,12 @@ function getSolfege(interval, scaleName, scale, movableDo, movableLa) {
     scaleName.includes("Locrian") ||
     scaleName.includes("Minor");
 
-  if (isMajor && movableDo) {
+  if (isMajor) {
     const DO = ["Do","Re","Mi","Fa","So","La","Ti"];
     return DO[degreeIndex];
   }
 
-  if (isMinor && movableLa) {
+  if (isMinor) {
     const LA = ["La","Ti","Do","Re","Mi","Fa","So"];
     return LA[degreeIndex];
   }
@@ -597,9 +603,8 @@ function updateFretboard(){
   const showNames = document.getElementById("toggleShowNoteNames").checked;
   const showOct = document.getElementById("toggleShowOctaves").checked;
   const showHz = document.getElementById("toggleShowHz").checked;
-  const showCents = document.getElementById("toggleShowCents").checked;
-  const movableDo = document.getElementById("toggleMovableDo").checked;
-  const movableLa = document.getElementById("toggleMovableLa").checked;
+  const showAbsCents = document.getElementById("toggleShowAbsCents").checked;
+  const showIntCents = document.getElementById("toggleShowIntCents").checked;
 
   const scale = SCALES[scaleName];
   const triad = TRIADS[triadName];
@@ -607,6 +612,19 @@ function updateFretboard(){
   const chroma = chromaticSet(chromatic);
 
   const rootIndex = noteIndex(root);
+
+  const isMajor =
+    scaleName.includes("Ionian") ||
+    scaleName.includes("Lydian") ||
+    scaleName.includes("Mixolydian") ||
+    scaleName.includes("Major");
+
+  const isMinor =
+    scaleName.includes("Aeolian") ||
+    scaleName.includes("Dorian") ||
+    scaleName.includes("Phrygian") ||
+    scaleName.includes("Locrian") ||
+    scaleName.includes("Minor");
 
   const cells = document.querySelectorAll(".note-cell");
 
@@ -618,45 +636,63 @@ function updateFretboard(){
     const string = Number(cell.dataset.string);
     const data = fretboard[fret][string];
 
-    const interval = (noteIndex(data.note) - rootIndex + 12) % 12;
+    const intervalSemitones =
+      (noteIndex(data.note) - rootIndex + 12) % 12;
 
-    /* NOTE PILL */
+    const intervalCents = intervalSemitones * 100;
+    const absoluteCents = noteIndex(data.note) * 100;
+
+    const inScale = scale.includes(intervalSemitones);
+    const sol = inScale ? getSolfege(intervalSemitones, scaleName, scale) : "";
+
+    /* NOTE PILL (note + octave + solfege to the right) */
     if (showNames) {
       const pill = document.createElement("div");
       pill.className = "note-pill";
-      pill.textContent = showOct ? `${data.note}${data.octave}` : data.note;
-      pill.style.background = showScale && scale.includes(interval)
+
+      if (showOct) {
+        pill.textContent = sol ? `${data.note}${data.octave} ${sol}` : `${data.note}${data.octave}`;
+      } else {
+        pill.textContent = sol ? `${data.note} ${sol}` : data.note;
+      }
+
+      pill.style.background = showScale && inScale
         ? "#22c55e"
         : "#38bdf8";
+
       cell.appendChild(pill);
     }
 
-    /* META (Hz + cents) */
-    if (showHz || showCents) {
-      const meta = document.createElement("div");
-      meta.className = "note-meta";
-
-      if (showHz) meta.innerHTML += `${data.freq}Hz`;
-      if (showCents) meta.innerHTML += (showHz ? "<br>" : "") + `${data.cents}¢`;
-
-      cell.appendChild(meta);
+    /* INTERVAL CENTS (top-left) – only meaningful when scale is active */
+    if (showIntCents && inScale && (isMajor || isMinor)) {
+      const ic = document.createElement("div");
+      ic.className = "note-int-cents";
+      ic.textContent = `${intervalCents}¢`;
+      cell.appendChild(ic);
     }
 
-    /* SOLFEGE (Movable Do / La) */
-    const sol = getSolfege(interval, scaleName, scale, movableDo, movableLa);
-    if (sol) {
-      const tag = document.createElement("div");
-      tag.className = "note-solfege-tag";
-      tag.textContent = sol;
-      cell.appendChild(tag);
+    /* HZ (bottom-left) */
+    if (showHz) {
+      const hz = document.createElement("div");
+      hz.className = "note-hz";
+      hz.textContent = `${data.freq}Hz`;
+      cell.appendChild(hz);
+    }
+
+    /* ABSOLUTE CENTS (bottom-center, always fixed per pitch class) */
+    if (showAbsCents) {
+      const abs = document.createElement("div");
+      abs.className = "note-abs-cents";
+      abs.textContent = `${absoluteCents}¢`;
+      cell.appendChild(abs);
     }
 
     /* OUTLINES */
-    if (interval === 0) cell.classList.add("note-root-outline");
-    if (showScale && scale.includes(interval)) cell.classList.add("note-scale-outline");
-    if (triad.includes(interval)) cell.classList.add("note-chord-outline");
-    if (triad[0] === interval) cell.classList.add("note-chord-root");
-    if (chroma.includes(interval)) cell.classList.add("note-chromatic-outline");
+    if (intervalSemitones === 0) cell.classList.add("note-root-outline");
+    if (showScale && inScale) cell.classList.add("note-scale-outline");
+    if (triad.includes(intervalSemitones)) cell.classList.add("note-chord-outline");
+    if (triad[0] === intervalSemitones) cell.classList.add("note-chord-root");
+    if (chroma.includes(intervalSemitones)) cell.classList.add("note-chromatic-outline");
 
     /* DOTS (simple always-on example) */
     const dot1 = document.createElement("div");
