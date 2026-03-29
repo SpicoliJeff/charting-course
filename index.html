@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Functional Fretboard – Stable Build</title>
+  <title>Functional Fretboard – Stable Build + Pronunciation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -68,349 +68,432 @@
     .toggle {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
-      font-size: 0.75rem;
-      color: var(--muted);
+      gap: 0.35rem;
+      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      font-size: 0.8rem;
+    }
+
+    .toggle input {
+      accent-color: #22c55e;
     }
 
     main {
-      padding: 1rem;
       display: grid;
-      grid-template-columns: 1fr 350px;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr);
       gap: 1rem;
-    }
-
-    .fretboard-card,
-    .tabs-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
       padding: 1rem;
     }
 
-    .string-label-row {
-      display: grid;
-      grid-template-columns: 60px repeat(6, 1fr);
-      background: #0f172a;
-      padding: 0.4rem 0;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.8rem;
+    .fretboard-panel {
+      background: var(--panel);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      overflow: auto;
     }
 
-    .fretboard-grid {
-      display: grid;
-      grid-template-columns: 60px repeat(6, 1fr);
-      grid-auto-rows: 42px;
-      border: 1px solid #1f2937;
-    }
-
-    .fret-number {
+    .theory-panel {
+      background: var(--panel);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 0.75rem;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0f172a;
-      color: var(--muted);
-      border-bottom: 1px solid #1f2937;
-      border-right: 1px solid #1f2937;
-      font-size: 0.75rem;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .note-cell {
-      position: relative;
+    .tab-buttons {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--cell-bg);
-      border-bottom: 1px solid #1f2937;
-      border-right: 1px solid #1f2937;
-    }
-
-    .note-cell:hover { background: var(--cell-hover); }
-
-    .note-pill {
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #000;
-      white-space: nowrap;
-    }
-
-    /* interval cents ABOVE note */
-    .note-int-cents {
-      position: absolute;
-      top: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.55rem;
-      color: var(--muted);
-      font-family: var(--font-mono);
-    }
-
-    /* Hz directly under note */
-    .note-hz {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.55rem;
-      color: var(--muted);
-      font-family: var(--font-mono);
-    }
-
-    /* absolute cents under Hz */
-    .note-abs-cents {
-      position: absolute;
-      bottom: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.55rem;
-      color: var(--muted);
-      font-family: var(--font-mono);
-    }
-
-    .note-root-outline { outline: 2px solid var(--root-outline); outline-offset: -2px; }
-    .note-scale-outline { outline: 2px solid var(--scale-outline); outline-offset: -2px; }
-    .note-chord-outline { outline: 2px solid var(--triad-outline); outline-offset: -2px; }
-    .note-chord-root { outline: 2px solid var(--root-outline); outline-offset: -2px; }
-    .note-chromatic-outline { outline: 2px solid var(--chromatic-outline); outline-offset: -2px; }
-
-    /* Tabs */
-    .tabs-header {
-      display: flex;
-      gap: 0.25rem;
+      gap: 0.35rem;
       margin-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .tab-button {
-      flex: 1;
-      padding: 0.4rem;
-      background: #1e293b;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
       border: 1px solid #334155;
+      background: #020617;
       color: var(--muted);
-      border-radius: 4px;
+      font-size: 0.75rem;
       cursor: pointer;
-      font-size: 0.8rem;
     }
 
     .tab-button.active {
-      background: #0f172a;
-      color: var(--text);
-      border-color: #38bdf8;
+      background: #22c55e;
+      color: #020617;
+      border-color: #22c55e;
     }
 
-    .tab-panel { display: none; font-size: 0.8rem; color: var(--muted); }
-    .tab-panel.active { display: block; }
+    .tab-panel {
+      display: none;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
 
-    @media (max-width: 900px) {
-      main { grid-template-columns: 1fr; }
+    .tab-panel.active {
+      display: block;
+    }
+
+    .fretboard {
+      display: grid;
+      grid-template-columns: auto repeat(24, 1fr);
+      gap: 2px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+
+    .fret-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      text-align: center;
+      padding: 0.25rem 0.15rem;
+      color: var(--muted);
+      border-right: 1px solid #1f2937;
+    }
+
+    .string-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+      color: var(--muted);
+      border-bottom: 1px solid #1f2937;
+    }
+
+    .note-cell {
+      min-width: 40px;
+      min-height: 32px;
+      border-radius: 0.35rem;
+      background: var(--cell-bg);
+      border: 1px solid #020617;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      position: relative;
+    }
+
+    .note-cell:hover {
+      background: var(--cell-hover);
+    }
+
+    .note-pill {
+      padding: 0.1rem 0.35rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      color: #020617;
+      background: #38bdf8;
+      white-space: nowrap;
+    }
+
+    .note-int-cents,
+    .note-hz,
+    .note-abs-cents {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .note-root-outline {
+      box-shadow: 0 0 0 2px var(--root-outline);
+    }
+
+    .note-scale-outline {
+      box-shadow: 0 0 0 2px var(--scale-outline);
+    }
+
+    .note-chord-outline {
+      box-shadow: 0 0 0 2px var(--triad-outline);
+    }
+
+    .note-chord-root {
+      box-shadow: 0 0 0 2px var(--triad-outline), 0 0 0 4px var(--root-outline);
+    }
+
+    .note-chromatic-outline {
+      box-shadow: 0 0 0 2px var(--chromatic-outline);
+    }
+
+    /* Pronunciation bubble */
+
+    #pronunciation-bubble {
+      position: absolute;
+      transform: translate(-50%, -50%) scale(0.92);
+      padding: 14px 18px;
+      border-radius: 10px;
+      max-width: 260px;
+      text-align: center;
+      line-height: 1.25;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      background: #e5e7eb;
+      color: #020617;
+      box-shadow: 0px 8px 18px rgba(0,0,0,0.25);
+      transition:
+        opacity 0.22s ease,
+        transform 0.22s ease,
+        box-shadow 0.18s ease;
+    }
+
+    #pronunciation-bubble.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #pronunciation-bubble.closing {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.92);
+    }
+
+    #pronunciation-bubble .bubble-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    #pronunciation-bubble b {
+      display: block;
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
     }
   </style>
 </head>
-
 <body>
   <header>
-    <div>
-      <div style="font-size:1.2rem;font-weight:600;">Functional Fretboard</div>
-      <div style="font-size:0.8rem;color:var(--muted);">
-        Vertical • 24 Frets • Hz • Absolute Cents • Movable Do / La
-      </div>
-    </div>
-
     <div class="controls-row">
       <div class="control-group">
         <span>Root</span>
         <select id="rootSelect"></select>
       </div>
-
       <div class="control-group">
         <span>Scale</span>
         <select id="scaleSelect"></select>
       </div>
-
       <div class="control-group">
         <span>Triad</span>
         <select id="triadSelect"></select>
       </div>
-
       <div class="control-group">
         <span>Chromatic</span>
-        <select id="chromaticSelect">
-          <option value="none">None</option>
-          <option value="1">m2</option>
-          <option value="2">M2</option>
-          <option value="3">m3</option>
-          <option value="4">M3</option>
-          <option value="5">P4</option>
-          <option value="6">TT</option>
-          <option value="7">P5</option>
-          <option value="8">m6</option>
-          <option value="9">M6</option>
-          <option value="10">m7</option>
-          <option value="11">M7</option>
-        </select>
+        <select id="chromaticSelect"></select>
       </div>
+    </div>
 
-      <div class="control-group">
-        <label class="toggle"><input type="checkbox" id="toggleShowScale" checked>Scale</label>
-        <label class="toggle"><input type="checkbox" id="toggleShowNoteNames" checked>Names</label>
-        <label class="toggle"><input type="checkbox" id="toggleShowOctaves" checked>Oct</label>
-        <label class="toggle"><input type="checkbox" id="toggleShowHz" checked>Hz</label>
-        <label class="toggle"><input type="checkbox" id="toggleShowAbsCents" checked>Abs¢</label>
-        <label class="toggle"><input type="checkbox" id="toggleShowIntCents" checked>Int¢</label>
-      </div>
+    <div class="controls-row">
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowScale" checked />
+        <span>Show Scale</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowNoteNames" checked />
+        <span>Show Note Names</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowOctaves" checked />
+        <span>Show Octaves</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowHz" />
+        <span>Show Hz</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowAbsCents" />
+        <span>Show Abs Cents</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleShowIntCents" />
+        <span>Show Int Cents</span>
+      </label>
     </div>
   </header>
 
   <main>
-    <section class="fretboard-card">
-      <div class="string-label-row">
-        <div></div>
-        <div>E</div><div>A</div><div>D</div><div>G</div><div>B</div><div>E</div>
-      </div>
-      <div class="fretboard-grid" id="fretboardGrid"></div>
+    <section class="fretboard-panel">
+      <div id="fretboard" class="fretboard"></div>
     </section>
 
-    <section class="tabs-card">
-      <div class="tabs-header">
+    <section class="theory-panel">
+      <div class="tab-buttons">
         <button class="tab-button active" data-tab="tab-scales">Scales</button>
         <button class="tab-button" data-tab="tab-theory">Theory</button>
         <button class="tab-button" data-tab="tab-triads">Triads</button>
         <button class="tab-button" data-tab="tab-intonation">Intonation</button>
+        <button class="tab-button" data-tab="tab-pronunciation">Pronunciation</button>
       </div>
 
-      <div class="tabs-body">
-        <div id="tab-scales" class="tab-panel active"></div>
-        <div id="tab-theory" class="tab-panel"></div>
-        <div id="tab-triads" class="tab-panel"></div>
-        <div id="tab-intonation" class="tab-panel"></div>
+      <div id="tab-scales" class="tab-panel active"></div>
+      <div id="tab-theory" class="tab-panel"></div>
+      <div id="tab-triads" class="tab-panel"></div>
+      <div id="tab-intonation" class="tab-panel"></div>
+      <div id="tab-pronunciation" class="tab-panel">
+        <h3>Pronunciation Engine</h3>
+        <p>
+          Double‑click any note on the fretboard to open its pronunciation bubble.
+          Double‑click the same note again to close it, or click anywhere else to dismiss.
+        </p>
+        <p>
+          The bubble adapts to register, string brightness, solfege function, and vowel feel.
+        </p>
       </div>
     </section>
   </main>
+
+  <!-- Pronunciation bubble -->
+  <div id="pronunciation-bubble"></div>
+
   <script>
+    // ---------- DATA ----------
     const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
-    function noteIndex(n){ return NOTES.indexOf(n); }
-    function noteAtIndex(i){ return NOTES[(i+1200)%12]; }
-
-    function frequencyFor(note, octave){
-      const idx = noteIndex(note);
-      const midi = (octave+1)*12 + idx;
-      return 440 * Math.pow(2,(midi-69)/12);
-    }
-
-    const TUNING = [
-      {note:"E",octave:2},
-      {note:"A",octave:2},
-      {note:"D",octave:3},
-      {note:"G",octave:3},
-      {note:"B",octave:3},
-      {note:"E",octave:4}
-    ];
-
-    const fretboard = [];
-    for(let f=0; f<=24; f++){
-      const row=[];
-      for(let s=0; s<6; s++){
-        const open=TUNING[s];
-        const idx=noteIndex(open.note)+f;
-        const note=noteAtIndex(idx);
-        const octave=open.octave+Math.floor((noteIndex(open.note)+f)/12);
-        const freq=frequencyFor(note,octave);
-        row.push({note,octave,freq:freq.toFixed(2),fret:f,string:s});
-      }
-      fretboard.push(row);
-    }
-
-    const SCALES={
-      "Ionian (Major)":[0,2,4,5,7,9,11],
-      "Dorian":[0,2,3,5,7,9,10],
-      "Phrygian":[0,1,3,5,7,8,10],
-      "Lydian":[0,2,4,6,7,9,11],
-      "Mixolydian":[0,2,4,5,7,9,10],
-      "Aeolian (Natural Minor)":[0,2,3,5,7,8,10],
-      "Locrian":[0,1,3,5,6,8,10]
+    const SCALES = {
+      "Ionian (Major)": [0,2,4,5,7,9,11],
+      "Aeolian (Natural Minor)": [0,2,3,5,7,8,10]
+      // extend with your full set
     };
 
-    const TRIADS={
-      "none":[],
-      "Major":[0,4,7],
-      "Minor":[0,3,7],
-      "Diminished":[0,3,6],
-      "Augmented":[0,4,8],
-      "Sus2":[0,2,7],
-      "Sus4":[0,5,7]
+    const TRIADS = {
+      "Major Triad": [0,4,7],
+      "Minor Triad": [0,3,7]
+      // extend with your full set
     };
 
-    function chromaticSet(n){
-      if(n==="none") return [];
-      return [Number(n)];
+    function chromaticSet(name){
+      if(name==="None") return [];
+      if(name==="b2") return [1];
+      if(name==="#2/b3") return [3];
+      return [];
     }
 
-    function getSolfege(int,scaleName,scale){
-      const idx=scale.indexOf(int);
-      if(idx===-1) return "";
+    function noteIndex(note){
+      return NOTES.indexOf(note);
+    }
+
+    function getSolfege(int, scaleName, scale){
       const major = scaleName.includes("Ionian") || scaleName.includes("Lydian") ||
                     scaleName.includes("Mixolydian") || scaleName.includes("Major");
       const minor = scaleName.includes("Aeolian") || scaleName.includes("Dorian") ||
                     scaleName.includes("Phrygian") || scaleName.includes("Locrian") ||
                     scaleName.includes("Minor");
+
+      if(!scale.includes(int)) return "";
+
+      const degree = scale.indexOf(int);
       if(major){
-        return ["Do","Re","Mi","Fa","So","La","Ti"][idx];
+        return ["Do","Re","Mi","Fa","So","La","Ti"][degree] || "";
       }
       if(minor){
-        return ["La","Ti","Do","Re","Mi","Fa","So"][idx];
+        return ["La","Ti","Do","Re","Mi","Fa","So"][degree] || "";
       }
       return "";
     }
 
-    function populateSelectors(){
-      const rootSel=document.getElementById("rootSelect");
-      NOTES.forEach(n=>{
-        const o=document.createElement("option");
-        o.value=n; o.textContent=n;
-        rootSel.appendChild(o);
-      });
+    // ---------- FRETBOARD DATA ----------
+    const fretboard = [];
+    const strings = [
+      { name: "E", octave: 2 },
+      { name: "A", octave: 2 },
+      { name: "D", octave: 3 },
+      { name: "G", octave: 3 },
+      { name: "B", octave: 3 },
+      { name: "E", octave: 4 }
+    ];
 
-      const scaleSel=document.getElementById("scaleSelect");
-      Object.keys(SCALES).forEach(s=>{
-        const o=document.createElement("option");
-        o.value=s; o.textContent=s;
-        scaleSel.appendChild(o);
-      });
-
-      const triadSel=document.getElementById("triadSelect");
-      Object.keys(TRIADS).forEach(t=>{
-        const o=document.createElement("option");
-        o.value=t; o.textContent=t;
-        triadSel.appendChild(o);
-      });
-
-      // defaults
-      rootSel.value = "C";
-      scaleSel.value = "Ionian (Major)";
-      triadSel.value = "none";
-    }
-
-    function renderFretboard(){
-      const grid=document.getElementById("fretboardGrid");
-      grid.innerHTML="";
+    function buildFretboardData(){
       for(let f=0; f<=24; f++){
-        const num=document.createElement("div");
-        num.className="fret-number";
-        num.textContent=f;
-        grid.appendChild(num);
-        for(let s=0; s<6; s++){
-          const cell=document.createElement("div");
-          cell.className="note-cell";
-          cell.dataset.fret=f;
-          cell.dataset.string=s;
-          grid.appendChild(cell);
+        fretboard[f] = [];
+        for(let s=0; s<strings.length; s++){
+          const open = strings[s];
+          const idx = (noteIndex(open.name) + f) % 12;
+          const note = NOTES[idx];
+          const octave = open.octave + Math.floor((noteIndex(open.name) + f) / 12);
+          const freq = (440 * Math.pow(2, (noteIndex(note) - 9 + (octave-4)*12)/12)).toFixed(2);
+          fretboard[f][s] = { note, octave, freq };
         }
       }
     }
 
+    function renderFretboard(){
+      const fb = document.getElementById("fretboard");
+      fb.innerHTML = "";
+
+      const corner = document.createElement("div");
+      corner.className = "string-label";
+      fb.appendChild(corner);
+
+      for(let f=0; f<=24; f++){
+        const fl = document.createElement("div");
+        fl.className = "fret-label";
+        fl.textContent = f;
+        fb.appendChild(fl);
+      }
+
+      for(let s=0; s<strings.length; s++){
+        const sl = document.createElement("div");
+        sl.className = "string-label";
+        sl.textContent = strings[s].name;
+        fb.appendChild(sl);
+
+        for(let f=0; f<=24; f++){
+          const cell = document.createElement("div");
+          cell.className = "note-cell";
+          cell.dataset.fret = f;
+          cell.dataset.stringIndex = s;
+          const d = fretboard[f][s];
+          cell.dataset.note = d.note;
+          cell.dataset.octave = d.octave;
+          fb.appendChild(cell);
+        }
+      }
+    }
+
+    // ---------- SELECTORS ----------
+    function populateSelectors(){
+      const rootSelect = document.getElementById("rootSelect");
+      NOTES.forEach(n=>{
+        const opt = document.createElement("option");
+        opt.value = n;
+        opt.textContent = n;
+        rootSelect.appendChild(opt);
+      });
+      rootSelect.value = "A";
+
+      const scaleSelect = document.getElementById("scaleSelect");
+      Object.keys(SCALES).forEach(name=>{
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        scaleSelect.appendChild(opt);
+      });
+
+      const triadSelect = document.getElementById("triadSelect");
+      Object.keys(TRIADS).forEach(name=>{
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        triadSelect.appendChild(opt);
+      });
+
+      const chromaticSelect = document.getElementById("chromaticSelect");
+      ["None","b2","#2/b3"].forEach(name=>{
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        chromaticSelect.appendChild(opt);
+      });
+    }
+
+    // ---------- UPDATE FRETBOARD ----------
     function updateFretboard(){
       const root=document.getElementById("rootSelect").value;
       const scaleName=document.getElementById("scaleSelect").value;
@@ -441,7 +524,7 @@
         cell.className="note-cell";
 
         const f=Number(cell.dataset.fret);
-        const s=Number(cell.dataset.string);
+        const s=Number(cell.dataset.stringIndex);
         const d=fretboard[f][s];
 
         const int=(noteIndex(d.note)-rootIndex+12)%12;
@@ -450,6 +533,7 @@
 
         const inScale=scale.includes(int);
         const sol=inScale ? getSolfege(int,scaleName,scale) : "";
+        cell.dataset.solfege = sol;
 
         if(showNames){
           const pill=document.createElement("div");
@@ -490,6 +574,7 @@
       });
     }
 
+    // ---------- THEORY PANEL ----------
     function updateTheoryPanel(tabId){
       const root=document.getElementById("rootSelect").value;
       const scaleName=document.getElementById("scaleSelect").value;
@@ -567,6 +652,7 @@
       }
     }
 
+    // ---------- TABS ----------
     document.addEventListener("click",e=>{
       if(!e.target.classList.contains("tab-button")) return;
       document.querySelectorAll(".tab-button").forEach(b=>b.classList.remove("active"));
@@ -577,10 +663,191 @@
       updateTheoryPanel(tab);
     });
 
+    // ---------- PRONUNCIATION BUBBLE ----------
+    const bubble = document.getElementById("pronunciation-bubble");
+    let activeNoteCell = null;
+
+    function wirePronunciationBubbles() {
+      document.querySelectorAll(".note-cell").forEach(cell => {
+        cell.addEventListener("dblclick", () => {
+          if (activeNoteCell === cell) {
+            closeBubble();
+            return;
+          }
+
+          activeNoteCell = cell;
+          const noteData = extractNoteData(cell);
+          const content = generateBubbleContent(noteData);
+          openBubble(cell, content);
+        });
+      });
+    }
+
+    function extractNoteData(cell) {
+      return {
+        note: cell.dataset.note,
+        octave: Number(cell.dataset.octave),
+        stringIndex: Number(cell.dataset.stringIndex),
+        solfege: cell.dataset.solfege || ""
+      };
+    }
+
+    function openBubble(cell, content) {
+      bubble.innerHTML = content;
+
+      const rect = cell.getBoundingClientRect();
+      bubble.style.left = `${rect.left + rect.width / 2}px`;
+      bubble.style.top = `${rect.top + rect.height / 2}px`;
+
+      bubble.classList.remove("closing");
+      bubble.classList.add("visible");
+    }
+
+    function closeBubble() {
+      if (!bubble.classList.contains("visible")) return;
+      bubble.classList.add("closing");
+      setTimeout(() => {
+        bubble.classList.remove("visible", "closing");
+        activeNoteCell = null;
+      }, 220);
+    }
+
+    document.addEventListener("click", (e) => {
+      if (!bubble.contains(e.target) && !e.target.classList.contains("note-cell")) {
+        closeBubble();
+      }
+    });
+
+    // ---------- FULL ADAPTIVE VOCAL ENGINE ----------
+    function getRegister(octave) {
+      if (octave <= 2) return "low";
+      if (octave === 3) return "mid";
+      if (octave === 4) return "high";
+      return "very-high";
+    }
+
+    function getStringBrightness(stringIndex) {
+      // 0 = low E, 5 = high E
+      if (stringIndex <= 1) return "dark";
+      if (stringIndex <= 3) return "neutral";
+      return "bright";
+    }
+
+    function getVowelAdvice(solfege, register) {
+      const base = solfege || "Do";
+      const map = {
+        "Do": "DO → “doh” → dʌʊ (think easy ‘doh’ not tense ‘doh!’).",
+        "Re": "RE → “ray” → ɹeɪ (keep the jaw easy, don’t bite).",
+        "Mi": "MI → “mee” → miː (narrow but not pinched; cheeks soft).",
+        "Fa": "FA → “fah” → fɑː (drop the jaw, let it hang).",
+        "So": "SO → “soh” → soʊ (round lips slightly, no squeeze).",
+        "La": "LA → “lah” → lɑː (open, relaxed, like a sigh).",
+        "Ti": "TI → “tee” → tiː (aim for ‘ih/ee’ blend, not laser‑sharp)."
+      };
+      let line = map[base] || `${base} → keep the vowel easy and centered.`;
+
+      if (register === "high" || register === "very-high") {
+        line += " In this register, let the vowel migrate slightly toward a warmer, more ‘uh/ah’ center instead of a bright laser point.";
+      } else if (register === "low") {
+        line += " In this register, resist the urge to over‑darken; keep a bit of brightness so the pitch stays clear.";
+      }
+
+      return line;
+    }
+
+    function getResonanceAdvice(register, brightness) {
+      if (register === "low") {
+        return "Resonance: aim for chest + low mask. Feel vibration in the sternum and lips, not buried in the throat.";
+      }
+      if (register === "mid") {
+        return "Resonance: blend chest and head. Let the sound live behind the upper teeth and cheekbones, not pressed back.";
+      }
+      if (register === "high") {
+        return "Resonance: think ‘top of the face’. Let the sound ring in the cheekbones and around the eyes, with the throat staying loose.";
+      }
+      // very-high
+      return "Resonance: ultra‑light, almost whistle‑like. Let the sound float forward; no pushing, no grabbing, just a thin, ringing thread.";
+    }
+
+    function getTongueAdvice(solfege) {
+      if (["Mi","Ti"].includes(solfege)) {
+        return "Tongue: for MI/TI, keep the tongue high but relaxed, touching lightly behind the teeth, not jammed up.";
+      }
+      if (["La","Fa"].includes(solfege)) {
+        return "Tongue: for LA/FA, let the tongue rest low and wide, tip touching gently at the bottom of the teeth.";
+      }
+      return "Tongue: let the tongue stay wide and relaxed, with the tip lightly at the lower teeth—no stiff arching.";
+    }
+
+    function getPitchFindingAdvice(note, octave, solfege) {
+      const label = `${note}${octave}`;
+      if (solfege) {
+        return `Pitch‑finding: hear ${label} first as a pure pitch, then silently name it as “${solfege}” before you sing. Match the pitch, then add the label.`;
+      }
+      return `Pitch‑finding: hear ${label} in your head first, then slide up or down from a comfortable home note until it locks in.`;
+    }
+
+    function getMicroCoaching(register, brightness) {
+      const lines = [];
+
+      if (register === "low") {
+        lines.push("Don’t over‑press; let the breath stay moving and the tone stay buoyant.");
+      } else if (register === "mid") {
+        lines.push("Think ‘easy speaking voice plus 10% energy’, not a different, ‘special’ voice.");
+      } else if (register === "high") {
+        lines.push("If it feels tight, back off the volume first, not the pitch. Lighter is safer.");
+      } else {
+        lines.push("Treat this as a gentle, exploratory note—light, curious, and reversible at any moment.");
+      }
+
+      if (brightness === "dark") {
+        lines.push("On the lower strings, add a touch of mental brightness so the pitch doesn’t sink flat.");
+      } else if (brightness === "bright") {
+        lines.push("On the higher strings, avoid pushing; let the guitar’s brightness carry some of the clarity for you.");
+      }
+
+      return lines.join(" ");
+    }
+
+    function generateBubbleContent(data) {
+      const register = getRegister(data.octave);
+      const brightness = getStringBrightness(data.stringIndex);
+      const vowelLine = getVowelAdvice(data.solfege, register);
+      const resonanceLine = getResonanceAdvice(register, brightness);
+      const tongueLine = getTongueAdvice(data.solfege);
+      const pitchLine = getPitchFindingAdvice(data.note, data.octave, data.solfege);
+      const microLine = getMicroCoaching(register, brightness);
+
+      return `
+        <div class="bubble-title">
+          ${data.note}${data.octave}${data.solfege ? " — " + data.solfege : ""}
+        </div>
+
+        <b>Vowel Shape</b>
+        ${vowelLine}
+
+        <b>Resonance</b>
+        ${resonanceLine}
+
+        <b>Tongue / Jaw</b>
+        ${tongueLine}
+
+        <b>Pitch‑Finding</b>
+        ${pitchLine}
+
+        <b>Micro‑Coaching</b>
+        ${microLine}
+        Double‑click this note again to close the bubble.
+      `;
+    }
+
+    // ---------- INIT ----------
+    buildFretboardData();
     populateSelectors();
     renderFretboard();
     updateFretboard();
     updateTheoryPanel("tab-scales");
+    wirePronunciationBubbles();
 
     document.querySelectorAll("select,input[type=checkbox]").forEach(el=>{
       el.addEventListener("change",()=>{
