@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Functional Fretboard – Prosody Engine</title>
+  <title>Functional Fretboard – Hybrid Prosody Engine</title>
 
   <style>
-  /* -----------------------------------------------------------
-     ROOT COLORS
-  ----------------------------------------------------------- */
   :root {
     --bg: #020617;
     --bg-panel: #0a0f1f;
@@ -30,9 +27,6 @@
     --accent-soft: rgba(56,189,248,0.15);
   }
 
-  /* -----------------------------------------------------------
-     GLOBAL
-  ----------------------------------------------------------- */
   body {
     margin: 0;
     padding: 0;
@@ -47,9 +41,6 @@
     padding: 20px;
   }
 
-  /* -----------------------------------------------------------
-     HEADER
-  ----------------------------------------------------------- */
   .title {
     margin: 0;
     font-size: 22px;
@@ -62,9 +53,6 @@
     color: var(--text-muted);
   }
 
-  /* -----------------------------------------------------------
-     CONTROL PANEL
-  ----------------------------------------------------------- */
   .control-panel {
     margin-top: 20px;
     padding: 16px;
@@ -96,9 +84,6 @@
     font-size: 12px;
   }
 
-  /* -----------------------------------------------------------
-     TOGGLES
-  ----------------------------------------------------------- */
   .toggle-row {
     margin-top: 10px;
     display: flex;
@@ -136,32 +121,25 @@
     background: var(--accent);
   }
 
-  /* -----------------------------------------------------------
-     MAIN AREA LAYOUT
-  ----------------------------------------------------------- */
   .main-area {
     margin-top: 20px;
     display: flex;
     gap: 20px;
+    height: calc(100vh - 220px);
   }
 
-  /* -----------------------------------------------------------
-     FRETBOARD PANEL
-  ----------------------------------------------------------- */
   .fretboard-panel {
     flex: 1;
-    position: relative;
+    display: flex;
+    flex-direction: column;
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 12px;
-    overflow-y: auto; /* S1: vertical scroll only */
-    max-height: 80vh;
+    overflow: hidden;
+    position: relative;
   }
 
-  /* -----------------------------------------------------------
-     STEPS PANEL (FLOATING)
-  ----------------------------------------------------------- */
   .steps-panel {
     position: absolute;
     top: 12px;
@@ -172,6 +150,7 @@
     padding: 6px 10px;
     font-size: 11px;
     pointer-events: none;
+    z-index: 5;
   }
 
   .steps-title {
@@ -185,24 +164,22 @@
     font-size: 11px;
   }
 
-  /* -----------------------------------------------------------
-     FRETBOARD GRID (24 FRETS, VERTICAL)
-  ----------------------------------------------------------- */
   .fretboard {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  /* Each row = one fret */
   .fret-row {
     display: grid;
-    grid-template-columns: 30px repeat(6, 80px); /* W1 width */
+    grid-template-columns: 30px repeat(6, 80px);
     gap: 4px;
     align-items: stretch;
   }
 
-  /* Fret number (Style A) */
   .fret-number {
     font-size: 11px;
     color: var(--text-muted);
@@ -212,35 +189,27 @@
     align-items: center;
   }
 
-  /* -----------------------------------------------------------
-     NOTE CELL (H2 height)
-  ----------------------------------------------------------- */
   .note-cell {
     position: relative;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 6px 4px;
-    min-height: 85px; /* H2 */
+    min-height: 85px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  /* Chord overlay highlight */
   .note-cell.chord-note {
     box-shadow: 0 0 0 2px rgba(249,250,251,0.4);
     border-color: var(--triad);
   }
 
-  /* Interval highlight (subtle background) */
   .note-cell.interval-highlight {
     background: radial-gradient(circle at center, rgba(56,189,248,0.18), var(--bg));
   }
 
-  /* -----------------------------------------------------------
-     DOTS
-  ----------------------------------------------------------- */
   .dot-root {
     position: absolute;
     top: 4px;
@@ -271,18 +240,12 @@
     border-radius: 999px;
   }
 
-  /* -----------------------------------------------------------
-     NOTE NAME (N1 + F3)
-  ----------------------------------------------------------- */
   .note-name {
     margin-top: 6px;
     font-size: 15px;
     font-weight: 700;
   }
 
-  /* -----------------------------------------------------------
-     INTERVAL LABEL
-  ----------------------------------------------------------- */
   .note-interval {
     margin-top: 1px;
     font-size: 11px;
@@ -290,18 +253,12 @@
     font-family: ui-monospace, monospace;
   }
 
-  /* -----------------------------------------------------------
-     SOLFEGE
-  ----------------------------------------------------------- */
   .note-solfege {
     margin-top: 2px;
     font-size: 12px;
     color: var(--accent);
   }
 
-  /* -----------------------------------------------------------
-     PROSODY LINES (F‑Bottom)
-  ----------------------------------------------------------- */
   .note-feel-line {
     margin-top: 1px;
     font-size: 10px;
@@ -316,9 +273,6 @@
   .feel-outside { color: var(--outside); }
   .feel-story { color: var(--story); }
 
-  /* -----------------------------------------------------------
-     BOTTOM METRICS (Hz, Abs¢, Int¢)
-  ----------------------------------------------------------- */
   .note-bottom {
     margin-top: auto;
     font-size: 10px;
@@ -327,18 +281,38 @@
     font-family: ui-monospace, monospace;
   }
 
-  /* -----------------------------------------------------------
-     SIDE PANEL
-  ----------------------------------------------------------- */
+  .theory-panel {
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .theory-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .theory-line {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
   .side-panel {
-    width: 280px;
+    width: 320px;
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Tabs */
   .tabs {
     display: flex;
     gap: 6px;
@@ -360,7 +334,10 @@
     background: var(--accent-soft);
   }
 
-  /* Side content */
+  .side-section {
+    margin-bottom: 10px;
+  }
+
   .side-title {
     font-size: 11px;
     color: var(--accent);
@@ -379,9 +356,6 @@
     margin-bottom: 2px;
   }
 
-  /* -----------------------------------------------------------
-     PRONOUNCE BOX
-  ----------------------------------------------------------- */
   .pronounce-box {
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -421,25 +395,87 @@
     color: var(--accent);
   }
 
-  /* -----------------------------------------------------------
-     THEORY PANEL
-  ----------------------------------------------------------- */
-  .theory-panel {
-    margin-top: 20px;
-    padding: 12px;
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+  /* CHORDS TAB */
+
+  .chords-layout {
+    display: flex;
+    gap: 10px;
   }
 
-  .theory-title {
+  .degree-list {
+    width: 150px;
+    border-right: 1px solid var(--border);
+    padding-right: 8px;
+  }
+
+  .degree-item {
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
     font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .degree-item.active {
+    background: var(--accent-soft);
     color: var(--accent);
-    text-transform: uppercase;
+  }
+
+  .degree-main {
+    display: flex;
+    justify-content: space-between;
+    font-family: ui-monospace, monospace;
+  }
+
+  .degree-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .chord-detail {
+    flex: 1;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .chord-detail-row {
+    margin-bottom: 4px;
+  }
+
+  .chord-detail-label {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .chord-type-select {
     margin-bottom: 6px;
   }
 
-  .theory-line {
+  .chord-type-select select {
+    width: 100%;
+  }
+
+  .chord-tones {
+    font-family: ui-monospace, monospace;
+  }
+
+  .chord-logic-block {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+
+  .chord-logic-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .chord-logic-line {
     font-size: 11px;
     color: var(--text-muted);
     margin-bottom: 2px;
@@ -450,16 +486,12 @@
 <body>
 <div id="app" class="app">
 
-  <!-- HEADER -->
   <header class="header">
     <h1 class="title">Functional Fretboard</h1>
-    <div class="subtitle">Vertical 24‑fret prosody‑aware scale & chord explorer</div>
+    <div class="subtitle">Vertical 24‑fret hybrid prosody scale & chord explorer</div>
   </header>
 
-  <!-- TOP CONTROL PANEL -->
   <section class="control-panel">
-
-    <!-- ROOT + SCALE SELECTORS -->
     <div class="row row-main-selects">
       <div class="control-block">
         <label class="label">Root</label>
@@ -472,10 +504,8 @@
       </div>
     </div>
 
-    <!-- DISPLAY TOGGLES -->
     <div class="row toggle-row" id="toggleRow1">
       <span class="label">Display</span>
-
       <div class="toggle" data-toggle="names"><div class="dot"></div>Names</div>
       <div class="toggle" data-toggle="octaves"><div class="dot"></div>Oct</div>
       <div class="toggle" data-toggle="hz"><div class="dot"></div>Hz</div>
@@ -483,10 +513,8 @@
       <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int¢</div>
     </div>
 
-    <!-- PROSODY + CHORD/INTERVAL TOGGLES (R2‑A extended) -->
     <div class="row toggle-row" id="toggleRow2">
       <span class="label">Prosody</span>
-
       <div class="toggle" data-toggle="steps"><div class="dot"></div>Steps</div>
       <div class="toggle" data-toggle="doFeel"><div class="dot"></div>Do Feel</div>
       <div class="toggle" data-toggle="laFeel"><div class="dot"></div>La Feel</div>
@@ -496,40 +524,41 @@
       <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
       <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
     </div>
-
   </section>
 
-  <!-- MAIN CONTENT AREA -->
   <section class="main-area">
 
-    <!-- LEFT: FRETBOARD -->
     <div class="fretboard-panel">
-
-      <!-- Steps panel (floating) -->
       <div id="stepsPanel" class="steps-panel" style="display:none;">
         <div id="stepsTitle" class="steps-title"></div>
         <div id="stepsPattern" class="steps-pattern"></div>
       </div>
 
-      <!-- FRETBOARD WRAPPER (24 frets, vertical scroll only) -->
       <div id="fretboard" class="fretboard"></div>
 
+      <section class="theory-panel">
+        <div class="theory-title">Scale Theory</div>
+        <div id="theoryName" class="theory-line"></div>
+        <div id="theoryFamily" class="theory-line"></div>
+        <div id="theoryIntervals" class="theory-line"></div>
+        <div id="theorySteps" class="theory-line"></div>
+        <div id="theoryFeel" class="theory-line"></div>
+      </section>
     </div>
 
-    <!-- RIGHT: THEORY + TABS -->
     <aside class="side-panel">
-
-      <!-- Tabs -->
       <div class="tabs">
         <div class="tab active" data-tab="scales">Scales</div>
         <div class="tab" data-tab="pronounce">Pronounce</div>
+        <div class="tab" data-tab="chords">Chords</div>
       </div>
 
-      <!-- SCALE TAB -->
       <div id="tabScales" class="tab-content">
         <div class="side-section">
           <div class="side-title">Scale Families</div>
-          <div class="side-text">Grouped by function: major, minor, dominant, symmetric, pentatonic, Japanese, exotic.</div>
+          <div class="side-text">
+            Grouped by function: major, minor, dominant, symmetric, pentatonic, Japanese, exotic.
+          </div>
         </div>
 
         <div class="side-section">
@@ -540,7 +569,6 @@
         </div>
       </div>
 
-      <!-- PRONOUNCE TAB -->
       <div id="tabPronounce" class="tab-content" style="display:none;">
         <div class="pronounce-box">
           <div class="pronounce-title">Pronunciation Engine</div>
@@ -556,37 +584,82 @@
         </div>
       </div>
 
+      <div id="tabChords" class="tab-content" style="display:none;">
+        <div class="side-section">
+          <div class="side-title">Chord Builder</div>
+          <div class="chords-layout">
+            <div class="degree-list" id="degreeList"></div>
+            <div class="chord-detail">
+              <div class="chord-type-select">
+                <label class="label">Chord Type</label>
+                <select id="chordTypeSelect" class="select">
+                  <option value="maj">maj</option>
+                  <option value="min">min</option>
+                  <option value="dim">dim</option>
+                  <option value="aug">aug</option>
+                  <option value="sus2">sus2</option>
+                  <option value="sus4">sus4</option>
+                  <option value="power">5 (power)</option>
+                  <option value="maj7">maj7</option>
+                  <option value="min7">min7</option>
+                  <option value="dom7">dom7</option>
+                  <option value="halfdim7">half‑dim7</option>
+                  <option value="dim7">dim7</option>
+                  <option value="add9">add9</option>
+                  <option value="add11">add11</option>
+                  <option value="add13">add13</option>
+                </select>
+              </div>
+
+              <div class="chord-detail-row">
+                <span class="chord-detail-label">Chord Name:</span>
+                <span id="chordName"></span>
+              </div>
+              <div class="chord-detail-row">
+                <span class="chord-detail-label">Formula:</span>
+                <span id="chordFormula"></span>
+              </div>
+              <div class="chord-detail-row">
+                <span class="chord-detail-label">Chord Tones:</span>
+                <span id="chordTones" class="chord-tones"></span>
+              </div>
+
+              <div class="chord-logic-block">
+                <div class="chord-logic-title">Hybrid Chord Logic</div>
+                <div class="chord-logic-line">
+                  <strong>Diatonic Base:</strong> Chords begin on the selected scale degree, using the scale’s notes as the foundation.
+                </div>
+                <div class="chord-logic-line">
+                  <strong>Chromatic Extensions:</strong> If the chord type requires tones outside the scale (maj7, dom7, aug, dim7, add9, etc.), those tones are added chromatically.
+                </div>
+                <div class="chord-logic-line">
+                  <strong>Alteration Handling:</strong> Chromatic tones are labeled with interval notation (♭2, ♯4, ♭6, etc.) and highlighted as altered tones.
+                </div>
+                <div class="chord-logic-line">
+                  <strong>Functional Behavior:</strong> Triads and sevenths follow diatonic function; extended and altered chords follow chromatic function.
+                </div>
+                <div class="chord-logic-line">
+                  <strong>Prosody Integration:</strong> Chord tones still receive solfege + feel lines based on the underlying scale, even when chromatic tones appear.
+                </div>
+                <div class="chord-logic-line">
+                  <strong>Interval Labels:</strong> Every note shows its interval from the scale root: scale tones as diatonic degrees, chromatic tones as chromatic labels.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </aside>
 
   </section>
-
-  <!-- THEORY PANEL (BOTTOM) -->
-  <section class="theory-panel">
-    <div class="theory-title">Scale Theory</div>
-    <div id="theoryName" class="theory-line"></div>
-    <div id="theoryFamily" class="theory-line"></div>
-    <div id="theoryIntervals" class="theory-line"></div>
-    <div id="theorySteps" class="theory-line"></div>
-    <div id="theoryFeel" class="theory-line"></div>
-  </section>
-
 </div>
 
 <script>
-/* -----------------------------------------------------------
-   CORE NOTE + SCALE DATA
------------------------------------------------------------ */
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-
-/* V1 string order (top → bottom) */
 const STRINGS = ["E","B","G","D","A","E"];
-
-/* 24 frets + open string (O1) */
 const TOTAL_FRETS = 25;
 
-/* -----------------------------------------------------------
-   SCALE FAMILIES (grouped)
------------------------------------------------------------ */
 const SCALE_FAMILIES = [
   {
     id: "major_modes",
@@ -672,24 +745,6 @@ const SCALE_FAMILIES = [
   }
 ];
 
-/* -----------------------------------------------------------
-   SOLFEGE ROUTING
------------------------------------------------------------ */
-function isMajorFamily(famType) {
-  if (famType === "major") return true;
-  if (famType === "minor") return false;
-  return true; // neutral/mixed defaults to major
-}
-
-function solfegeForDegree(deg, isMajor) {
-  const major = ["Do","Re","Mi","Fa","So","La","Ti"];
-  const minor = ["La","Ti","Do","Re","Mi","Fa","So"];
-  return isMajor ? major[deg] : minor[deg];
-}
-
-/* -----------------------------------------------------------
-   FEEL ENGINES (Do Feel + La Feel)
------------------------------------------------------------ */
 const FEEL_DO = {
   "Do": [
     { text: "the home tonic – most stable note", class: "feel-stable" },
@@ -766,9 +821,6 @@ const FEEL_LA = {
   ]
 };
 
-/* -----------------------------------------------------------
-   STATE
------------------------------------------------------------ */
 const state = {
   root: "A",
   familyId: "minor_modes",
@@ -787,12 +839,13 @@ const state = {
     familyDot: true,
     chordOverlay: true,
     intervalHighlight: true
+  },
+  chord: {
+    degreeIndex: 0, // 0-based (I)
+    chordType: "min7"
   }
 };
 
-/* -----------------------------------------------------------
-   HELPERS
------------------------------------------------------------ */
 function noteIndex(n) {
   return NOTES.indexOf(n.replace("♯","#").replace("♭","b").split(" / ")[0]);
 }
@@ -824,7 +877,6 @@ function fmtCents(c) {
   return (c > 0 ? "+" : "−") + Math.abs(c).toFixed(0) + "¢";
 }
 
-/* Chromatic interval label from root (0–11) */
 function chromaticLabel(semi) {
   const map = {
     0: "1",
@@ -843,26 +895,28 @@ function chromaticLabel(semi) {
   return map[(semi + 120) % 12];
 }
 
-/* -----------------------------------------------------------
-   FEEL SELECTION LOGIC
------------------------------------------------------------ */
+function isMajorFamily(famType) {
+  if (famType === "major") return true;
+  if (famType === "minor") return false;
+  return true;
+}
+
+function solfegeForDegree(deg, isMajor) {
+  const major = ["Do","Re","Mi","Fa","So","La","Ti"];
+  const minor = ["La","Ti","Do","Re","Mi","Fa","So"];
+  return isMajor ? major[deg] : minor[deg];
+}
+
 function getFeelLines(sol, isMajor, toggles) {
   const { doFeel, laFeel } = toggles;
-
   if (!doFeel && !laFeel) return [];
-
   if (doFeel && !laFeel) return FEEL_DO[sol] || [];
   if (!doFeel && laFeel) return FEEL_LA[sol] || [];
-
   const meta = getScaleMeta();
   if (!meta) return [];
-
   return isMajor ? (FEEL_DO[sol] || []) : (FEEL_LA[sol] || []);
 }
 
-/* -----------------------------------------------------------
-   SCALE META
------------------------------------------------------------ */
 function getScaleMeta() {
   for (const fam of SCALE_FAMILIES) {
     for (const s of fam.scales) {
@@ -874,9 +928,106 @@ function getScaleMeta() {
   return null;
 }
 
-/* -----------------------------------------------------------
-   FRETBOARD RENDERER (24 FRETS, V1 STRINGS)
------------------------------------------------------------ */
+/* CHORD ENGINE */
+
+const CHORD_FORMULAS = {
+  maj: ["1","3","5"],
+  min: ["1","♭3","5"],
+  dim: ["1","♭3","♭5"],
+  aug: ["1","3","♯5"],
+  sus2: ["1","2","5"],
+  sus4: ["1","4","5"],
+  power: ["1","5"],
+  maj7: ["1","3","5","7"],
+  min7: ["1","♭3","5","♭7"],
+  dom7: ["1","3","5","♭7"],
+  halfdim7: ["1","♭3","♭5","♭7"],
+  dim7: ["1","♭3","♭5","𝄫7"],
+  add9: ["1","3","5","9"],
+  add11: ["1","3","5","11"],
+  add13: ["1","3","5","13"]
+};
+
+function degreeRomanAndQuality(scaleIntervals, degreeIndex, familyType) {
+  const deg = degreeIndex;
+  const isMajor = isMajorFamily(familyType);
+  const baseIntervals = scaleIntervals;
+  const third = (baseIntervals[(deg + 2) % baseIntervals.length] - baseIntervals[deg] + 120) % 12;
+  const fifth = (baseIntervals[(deg + 4) % baseIntervals.length] - baseIntervals[deg] + 120) % 12;
+
+  let quality = "maj";
+  if (third === 3 && fifth === 7) quality = "min";
+  else if (third === 3 && fifth === 6) quality = "dim";
+  else if (third === 4 && fifth === 8) quality = "aug";
+
+  const romanBase = ["I","II","III","IV","V","VI","VII"][deg];
+  let roman = romanBase;
+  if (quality === "min") roman = romanBase.toLowerCase();
+  if (quality === "dim") roman = romanBase.toLowerCase() + "°";
+
+  return { roman, quality };
+}
+
+function intervalToSemis(label) {
+  const map = {
+    "1": 0,
+    "♭2": 1,
+    "2": 2,
+    "♯2": 3,
+    "♭3": 3,
+    "3": 4,
+    "4": 5,
+    "♯4": 6,
+    "♭5": 6,
+    "5": 7,
+    "♯5": 8,
+    "♭6": 8,
+    "6": 9,
+    "♯6": 10,
+    "♭7": 10,
+    "7": 11,
+    "9": 14,
+    "11": 17,
+    "13": 21,
+    "𝄫7": 9
+  };
+  return map[label] ?? 0;
+}
+
+function buildHybridChord(rootNote, scaleIntervals, degreeIndex, chordType) {
+  const formula = CHORD_FORMULAS[chordType] || ["1","3","5"];
+  const rootIdx = noteIndex(rootNote);
+  const degreeOffset = scaleIntervals[degreeIndex % scaleIntervals.length];
+  const degreeRootNote = NOTES[(rootIdx + degreeOffset) % 12];
+
+  const isTriadOr7 =
+    chordType === "maj" || chordType === "min" || chordType === "dim" ||
+    chordType === "aug" || chordType === "maj7" || chordType === "min7" ||
+    chordType === "dom7" || chordType === "halfdim7" || chordType === "dim7" ||
+    chordType === "power";
+
+  const chordTones = [];
+
+  for (const label of formula) {
+    const semis = intervalToSemis(label);
+    let note;
+    if (isTriadOr7) {
+      const diatonicIndex = (degreeIndex + Math.round(semis / 2)) % scaleIntervals.length;
+      const diatonicOffset = scaleIntervals[diatonicIndex];
+      note = NOTES[(rootIdx + diatonicOffset) % 12];
+      const ideal = NOTES[(noteIndex(degreeRootNote) + semis) % 12];
+      if (ideal !== note) note = ideal;
+    } else {
+      note = NOTES[(noteIndex(degreeRootNote) + semis) % 12];
+    }
+    chordTones.push({ label, note });
+  }
+
+  return chordTones;
+}
+
+/* FRETBOARD */
+
 function buildFretboard() {
   const fb = document.getElementById("fretboard");
   fb.innerHTML = "";
@@ -888,8 +1039,13 @@ function buildFretboard() {
   const isMajor = isMajorFamily(family.familyType);
   const scaleNotes = buildScale(state.root, scale.intervals);
 
-  const triadIntervals = [0, scale.intervals[2] ?? 4, scale.intervals[4] ?? 7];
-  const triadNotes = triadIntervals.map(i => transpose(state.root, i));
+  const chordTones = buildHybridChord(
+    state.root,
+    scale.intervals,
+    state.chord.degreeIndex,
+    state.chord.chordType
+  );
+  const chordNoteSet = new Set(chordTones.map(ct => ct.note));
 
   const stepsPanel = document.getElementById("stepsPanel");
   if (state.toggles.steps) {
@@ -921,9 +1077,9 @@ function buildFretboard() {
 
       const isRoot = noteName === state.root;
       const inScale = scaleNotes.includes(noteName);
-      const isTriad = triadNotes.includes(noteName);
+      const inChord = chordNoteSet.has(noteName);
 
-      if (state.toggles.chordOverlay && isTriad) {
+      if (state.toggles.chordOverlay && inChord) {
         cell.classList.add("chord-note");
       }
 
@@ -952,10 +1108,10 @@ function buildFretboard() {
       const noteDiv = document.createElement("div");
       noteDiv.className = "note-name";
       const baseName = state.toggles.names ? noteName : "";
-      noteDiv.textContent = state.toggles.octaves ? `${baseName}${octave}` : baseName || noteName;
+      noteDiv.textContent = state.toggles.octaves ? `${baseName}${octave}` : (baseName || noteName);
       noteDiv.style.color =
         isRoot ? "var(--root)" :
-        isTriad ? "var(--triad)" :
+        inChord ? "var(--triad)" :
         inScale ? "var(--scale)" :
         "var(--chromatic)";
       cell.appendChild(noteDiv);
@@ -1019,9 +1175,8 @@ function buildFretboard() {
   }
 }
 
-/* -----------------------------------------------------------
-   BUILD ROOT SELECT
------------------------------------------------------------ */
+/* ROOT SELECT */
+
 function initRootSelect() {
   const sel = document.getElementById("rootSelect");
   sel.innerHTML = "";
@@ -1037,12 +1192,13 @@ function initRootSelect() {
     state.root = sel.value;
     buildFretboard();
     updateTheoryPanel();
+    updateSidePanel();
+    updateChordPanel();
   });
 }
 
-/* -----------------------------------------------------------
-   BUILD SCALE SELECT (GROUPED)
------------------------------------------------------------ */
+/* SCALE SELECT */
+
 function initScaleSelect() {
   const sel = document.getElementById("scaleSelect");
   sel.innerHTML = "";
@@ -1072,12 +1228,13 @@ function initScaleSelect() {
     state.scaleId = scaleId;
     buildFretboard();
     updateTheoryPanel();
+    updateSidePanel();
+    updateChordPanel();
   });
 }
 
-/* -----------------------------------------------------------
-   TOGGLE WIRING
------------------------------------------------------------ */
+/* TOGGLES */
+
 function initToggles() {
   document.querySelectorAll(".toggle").forEach(t => {
     const key = t.getAttribute("data-toggle");
@@ -1090,17 +1247,19 @@ function initToggles() {
       t.classList.toggle("active");
       buildFretboard();
       updateTheoryPanel();
+      updateSidePanel();
+      updateChordPanel();
     });
   });
 }
 
-/* -----------------------------------------------------------
-   TAB SYSTEM
------------------------------------------------------------ */
+/* TABS */
+
 function initTabs() {
   const tabs = document.querySelectorAll(".tab");
   const tabScales = document.getElementById("tabScales");
   const tabPronounce = document.getElementById("tabPronounce");
+  const tabChords = document.getElementById("tabChords");
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
@@ -1108,20 +1267,15 @@ function initTabs() {
       tab.classList.add("active");
 
       const which = tab.getAttribute("data-tab");
-      if (which === "scales") {
-        tabScales.style.display = "block";
-        tabPronounce.style.display = "none";
-      } else {
-        tabScales.style.display = "none";
-        tabPronounce.style.display = "block";
-      }
+      tabScales.style.display = which === "scales" ? "block" : "none";
+      tabPronounce.style.display = which === "pronounce" ? "block" : "none";
+      tabChords.style.display = which === "chords" ? "block" : "none";
     });
   });
 }
 
-/* -----------------------------------------------------------
-   THEORY PANEL UPDATE
------------------------------------------------------------ */
+/* THEORY PANEL */
+
 function updateTheoryPanel() {
   const meta = getScaleMeta();
   if (!meta) return;
@@ -1145,6 +1299,14 @@ function updateTheoryPanel() {
     isMajor
       ? "Prosody: Movable‑Do feel sheet (major)."
       : "Prosody: Movable‑La feel sheet (minor).";
+}
+
+/* SIDE PANEL (SCALES TAB) */
+
+function updateSidePanel() {
+  const meta = getScaleMeta();
+  if (!meta) return;
+  const { family, scale } = meta;
 
   document.getElementById("sideCurrent").textContent =
     `${state.root} ${scale.name}`;
@@ -1156,16 +1318,109 @@ function updateTheoryPanel() {
     `Steps: ${scale.steps.join(" – ")}`;
 }
 
-/* -----------------------------------------------------------
-   INIT
------------------------------------------------------------ */
+/* CHORDS TAB */
+
+function initChordPanel() {
+  const chordTypeSelect = document.getElementById("chordTypeSelect");
+  chordTypeSelect.value = state.chord.chordType;
+  chordTypeSelect.addEventListener("change", () => {
+    state.chord.chordType = chordTypeSelect.value;
+    buildFretboard();
+    updateChordPanel();
+  });
+
+  buildDegreeList();
+  updateChordPanel();
+}
+
+function buildDegreeList() {
+  const meta = getScaleMeta();
+  if (!meta) return;
+  const { family, scale } = meta;
+
+  const degreeList = document.getElementById("degreeList");
+  degreeList.innerHTML = "";
+
+  const scaleNotes = buildScale(state.root, scale.intervals);
+
+  for (let i = 0; i < scaleNotes.length; i++) {
+    const { roman } = degreeRomanAndQuality(scale.intervals, i, family.familyType);
+    const note = scaleNotes[i];
+    const funcNames = ["Tonic","Supertonic","Mediant","Subdominant","Dominant","Submediant","Leading Tone"];
+    const func = funcNames[i] || "";
+
+    const item = document.createElement("div");
+    item.className = "degree-item" + (i === state.chord.degreeIndex ? " active" : "");
+    item.dataset.index = i;
+
+    const main = document.createElement("div");
+    main.className = "degree-main";
+    main.innerHTML = `<span>${roman}</span><span>${note}</span>`;
+
+    const sub = document.createElement("div");
+    sub.className = "degree-sub";
+    sub.textContent = func;
+
+    item.appendChild(main);
+    item.appendChild(sub);
+
+    item.addEventListener("click", () => {
+      state.chord.degreeIndex = i;
+      document.querySelectorAll(".degree-item").forEach(d => d.classList.remove("active"));
+      item.classList.add("active");
+      buildFretboard();
+      updateChordPanel();
+    });
+
+    degreeList.appendChild(item);
+  }
+}
+
+function updateChordPanel() {
+  const meta = getScaleMeta();
+  if (!meta) return;
+  const { family, scale } = meta;
+
+  const scaleNotes = buildScale(state.root, scale.intervals);
+  const degreeIdx = state.chord.degreeIndex;
+  const degreeNote = scaleNotes[degreeIdx];
+
+  const { roman } = degreeRomanAndQuality(scale.intervals, degreeIdx, family.familyType);
+  const chordType = state.chord.chordType;
+  const formula = CHORD_FORMULAS[chordType] || ["1","3","5"];
+
+  const chordTones = buildHybridChord(
+    state.root,
+    scale.intervals,
+    degreeIdx,
+    chordType
+  );
+
+  document.getElementById("chordName").textContent =
+    `${roman} ${chordType}`;
+
+  document.getElementById("chordFormula").textContent =
+    formula.join(" – ");
+
+  const tonesStr = chordTones
+    .map(ct => `${ct.note} (${ct.label})`)
+    .join(", ");
+  document.getElementById("chordTones").textContent = tonesStr;
+
+  buildDegreeList();
+}
+
+/* INIT */
+
 function init() {
   initRootSelect();
   initScaleSelect();
   initToggles();
   initTabs();
+  initChordPanel();
   buildFretboard();
   updateTheoryPanel();
+  updateSidePanel();
 }
 
 document.addEventListener("DOMContentLoaded", init);
