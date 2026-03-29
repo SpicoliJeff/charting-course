@@ -3,6 +3,448 @@
 <head>
   <meta charset="UTF-8" />
   <title>Functional Fretboard – Prosody Engine</title>
+
+  <style>
+  /* -----------------------------------------------------------
+     ROOT COLORS
+  ----------------------------------------------------------- */
+  :root {
+    --bg: #020617;
+    --bg-panel: #0a0f1f;
+    --border: #1e293b;
+    --text: #e5e7eb;
+    --text-muted: #94a3b8;
+
+    --root: #fb923c;
+    --scale: #22c55e;
+    --triad: #f9fafb;
+    --chromatic: #a855f7;
+
+    --dominant: #f97316;
+    --leading: #ef4444;
+    --outside: #a78bfa;
+    --story: #60a5fa;
+    --stable: #22c55e;
+
+    --accent: #38bdf8;
+    --accent-soft: rgba(56,189,248,0.15);
+  }
+
+  /* -----------------------------------------------------------
+     GLOBAL
+  ----------------------------------------------------------- */
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* -----------------------------------------------------------
+     HEADER
+  ----------------------------------------------------------- */
+  .title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* -----------------------------------------------------------
+     CONTROL PANEL
+  ----------------------------------------------------------- */
+  .control-panel {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  /* -----------------------------------------------------------
+     TOGGLES
+  ----------------------------------------------------------- */
+  .toggle-row {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .toggle.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border);
+  }
+
+  .toggle.active .dot {
+    background: var(--accent);
+  }
+
+  /* -----------------------------------------------------------
+     MAIN AREA LAYOUT
+  ----------------------------------------------------------- */
+  .main-area {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+  }
+
+  /* -----------------------------------------------------------
+     FRETBOARD PANEL
+  ----------------------------------------------------------- */
+  .fretboard-panel {
+    flex: 1;
+    position: relative;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    overflow-y: auto; /* S1: vertical scroll only */
+    max-height: 80vh;
+  }
+
+  /* -----------------------------------------------------------
+     STEPS PANEL (FLOATING)
+  ----------------------------------------------------------- */
+  .steps-panel {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(10,15,31,0.9);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    pointer-events: none;
+  }
+
+  .steps-title {
+    color: var(--accent);
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .steps-pattern {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+  }
+
+  /* -----------------------------------------------------------
+     FRETBOARD GRID (24 FRETS, VERTICAL)
+  ----------------------------------------------------------- */
+  .fretboard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Each row = one fret */
+  .fret-row {
+    display: grid;
+    grid-template-columns: 30px repeat(6, 80px); /* W1 width */
+    gap: 4px;
+    align-items: stretch;
+  }
+
+  /* Fret number (Style A) */
+  .fret-number {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+    padding-right: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* -----------------------------------------------------------
+     NOTE CELL (H2 height)
+  ----------------------------------------------------------- */
+  .note-cell {
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 4px;
+    min-height: 85px; /* H2 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Chord overlay highlight */
+  .note-cell.chord-note {
+    box-shadow: 0 0 0 2px rgba(249,250,251,0.4);
+    border-color: var(--triad);
+  }
+
+  /* Interval highlight (subtle background) */
+  .note-cell.interval-highlight {
+    background: radial-gradient(circle at center, rgba(56,189,248,0.18), var(--bg));
+  }
+
+  /* -----------------------------------------------------------
+     DOTS
+  ----------------------------------------------------------- */
+  .dot-root {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    background: var(--root);
+    border-radius: 999px;
+  }
+
+  .dot-scale {
+    position: absolute;
+    top: 4px;
+    left: 14px;
+    width: 8px;
+    height: 8px;
+    background: var(--scale);
+    border-radius: 999px;
+  }
+
+  .dot-family {
+    position: absolute;
+    top: 4px;
+    left: 24px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 999px;
+  }
+
+  /* -----------------------------------------------------------
+     NOTE NAME (N1 + F3)
+  ----------------------------------------------------------- */
+  .note-name {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  /* -----------------------------------------------------------
+     INTERVAL LABEL
+  ----------------------------------------------------------- */
+  .note-interval {
+    margin-top: 1px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: ui-monospace, monospace;
+  }
+
+  /* -----------------------------------------------------------
+     SOLFEGE
+  ----------------------------------------------------------- */
+  .note-solfege {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  /* -----------------------------------------------------------
+     PROSODY LINES (F‑Bottom)
+  ----------------------------------------------------------- */
+  .note-feel-line {
+    margin-top: 1px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .feel-stable { color: var(--stable); }
+  .feel-forward { color: var(--accent); }
+  .feel-dominant { color: var(--dominant); }
+  .feel-leading { color: var(--leading); }
+  .feel-outside { color: var(--outside); }
+  .feel-story { color: var(--story); }
+
+  /* -----------------------------------------------------------
+     BOTTOM METRICS (Hz, Abs¢, Int¢)
+  ----------------------------------------------------------- */
+  .note-bottom {
+    margin-top: auto;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    font-family: ui-monospace, monospace;
+  }
+
+  /* -----------------------------------------------------------
+     SIDE PANEL
+  ----------------------------------------------------------- */
+  .side-panel {
+    width: 280px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .tab {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .tab.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* Side content */
+  .side-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .side-text {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .side-mono {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  /* -----------------------------------------------------------
+     PRONOUNCE BOX
+  ----------------------------------------------------------- */
+  .pronounce-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    background: var(--bg);
+  }
+
+  .pronounce-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .pronounce-text {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .chip-row {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .chip {
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .chip.strong {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* -----------------------------------------------------------
+     THEORY PANEL
+  ----------------------------------------------------------- */
+  .theory-panel {
+    margin-top: 20px;
+    padding: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .theory-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .theory-line {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  </style>
 </head>
 
 <body>
@@ -11,7 +453,7 @@
   <!-- HEADER -->
   <header class="header">
     <h1 class="title">Functional Fretboard</h1>
-    <div class="subtitle">Vertical 24‑fret prosody‑aware scale explorer</div>
+    <div class="subtitle">Vertical 24‑fret prosody‑aware scale & chord explorer</div>
   </header>
 
   <!-- TOP CONTROL PANEL -->
@@ -41,7 +483,7 @@
       <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int¢</div>
     </div>
 
-    <!-- PROSODY TOGGLES (R2‑A) -->
+    <!-- PROSODY + CHORD/INTERVAL TOGGLES (R2‑A extended) -->
     <div class="row toggle-row" id="toggleRow2">
       <span class="label">Prosody</span>
 
@@ -51,6 +493,8 @@
       <div class="toggle" data-toggle="tonalDot"><div class="dot"></div>TonalDot</div>
       <div class="toggle" data-toggle="modeDot"><div class="dot"></div>ModeDot</div>
       <div class="toggle" data-toggle="familyDot"><div class="dot"></div>FamilyDot</div>
+      <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
+      <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
     </div>
 
   </section>
@@ -128,429 +572,6 @@
 
 </div>
 
-<!-- JS will be added in Part 3 -->
-</body>
-</html>
-<style>
-/* -----------------------------------------------------------
-   ROOT COLORS
------------------------------------------------------------ */
-:root {
-  --bg: #020617;
-  --bg-panel: #0a0f1f;
-  --border: #1e293b;
-  --text: #e5e7eb;
-  --text-muted: #94a3b8;
-
-  --root: #fb923c;
-  --scale: #22c55e;
-  --triad: #f9fafb;
-  --chromatic: #a855f7;
-
-  --dominant: #f97316;
-  --leading: #ef4444;
-  --outside: #a78bfa;
-  --story: #60a5fa;
-  --stable: #22c55e;
-
-  --accent: #38bdf8;
-  --accent-soft: rgba(56,189,248,0.15);
-}
-
-/* -----------------------------------------------------------
-   GLOBAL
------------------------------------------------------------ */
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* -----------------------------------------------------------
-   HEADER
------------------------------------------------------------ */
-.title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.subtitle {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-/* -----------------------------------------------------------
-   CONTROL PANEL
------------------------------------------------------------ */
-.control-panel {
-  margin-top: 20px;
-  padding: 16px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-/* -----------------------------------------------------------
-   TOGGLES
------------------------------------------------------------ */
-.toggle-row {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.toggle.active {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--border);
-}
-
-.toggle.active .dot {
-  background: var(--accent);
-}
-
-/* -----------------------------------------------------------
-   MAIN AREA LAYOUT
------------------------------------------------------------ */
-.main-area {
-  margin-top: 20px;
-  display: flex;
-  gap: 20px;
-}
-
-/* -----------------------------------------------------------
-   FRETBOARD PANEL
------------------------------------------------------------ */
-.fretboard-panel {
-  flex: 1;
-  position: relative;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  overflow-y: auto; /* S1: vertical scroll only */
-  max-height: 80vh;
-}
-
-/* -----------------------------------------------------------
-   STEPS PANEL (FLOATING)
------------------------------------------------------------ */
-.steps-panel {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(10,15,31,0.9);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 11px;
-  pointer-events: none;
-}
-
-.steps-title {
-  color: var(--accent);
-  font-size: 11px;
-  margin-bottom: 2px;
-}
-
-.steps-pattern {
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
-}
-
-/* -----------------------------------------------------------
-   FRETBOARD GRID (24 FRETS, VERTICAL)
------------------------------------------------------------ */
-.fretboard {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-/* Each row = one fret */
-.fret-row {
-  display: grid;
-  grid-template-columns: 30px repeat(6, 80px); /* W1 width */
-  gap: 4px;
-  align-items: stretch;
-}
-
-/* Fret number (Style A) */
-.fret-number {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-align: right;
-  padding-right: 6px;
-  display: flex;
-  align-items: center;
-}
-
-/* -----------------------------------------------------------
-   NOTE CELL (H2 height)
------------------------------------------------------------ */
-.note-cell {
-  position: relative;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 4px;
-  min-height: 85px; /* H2 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* -----------------------------------------------------------
-   DOTS
------------------------------------------------------------ */
-.dot-root {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 8px;
-  height: 8px;
-  background: var(--root);
-  border-radius: 999px;
-}
-
-.dot-scale {
-  position: absolute;
-  top: 4px;
-  left: 14px;
-  width: 8px;
-  height: 8px;
-  background: var(--scale);
-  border-radius: 999px;
-}
-
-.dot-family {
-  position: absolute;
-  top: 4px;
-  left: 24px;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 999px;
-}
-
-/* -----------------------------------------------------------
-   NOTE NAME (N1 + F3)
------------------------------------------------------------ */
-.note-name {
-  margin-top: 6px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-/* -----------------------------------------------------------
-   SOLFEGE
------------------------------------------------------------ */
-.note-solfege {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--accent);
-}
-
-/* -----------------------------------------------------------
-   PROSODY LINES (F‑Bottom)
------------------------------------------------------------ */
-.note-feel-line {
-  margin-top: 1px;
-  font-size: 10px;
-  text-align: center;
-  line-height: 1.2;
-}
-
-.feel-stable { color: var(--stable); }
-.feel-forward { color: var(--accent); }
-.feel-dominant { color: var(--dominant); }
-.feel-leading { color: var(--leading); }
-.feel-outside { color: var(--outside); }
-.feel-story { color: var(--story); }
-
-/* -----------------------------------------------------------
-   BOTTOM METRICS (Hz, Abs¢)
------------------------------------------------------------ */
-.note-bottom {
-  margin-top: auto;
-  font-size: 10px;
-  color: var(--text-muted);
-  text-align: center;
-  font-family: ui-monospace, monospace;
-}
-
-/* -----------------------------------------------------------
-   SIDE PANEL
------------------------------------------------------------ */
-.side-panel {
-  width: 280px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.tab {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.tab.active {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-
-/* Side content */
-.side-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.side-text {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.side-mono {
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
-  margin-bottom: 2px;
-}
-
-/* -----------------------------------------------------------
-   PRONOUNCE BOX
------------------------------------------------------------ */
-.pronounce-box {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  background: var(--bg);
-}
-
-.pronounce-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.pronounce-text {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.chip-row {
-  margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.chip {
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.chip.strong {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* -----------------------------------------------------------
-   THEORY PANEL
------------------------------------------------------------ */
-.theory-panel {
-  margin-top: 20px;
-  padding: 12px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.theory-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.theory-line {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-</style>
 <script>
 /* -----------------------------------------------------------
    CORE NOTE + SCALE DATA
@@ -763,7 +784,9 @@ const state = {
     laFeel: true,
     tonalDot: true,
     modeDot: true,
-    familyDot: true
+    familyDot: true,
+    chordOverlay: true,
+    intervalHighlight: true
   }
 };
 
@@ -799,6 +822,25 @@ function fmtHz(h) {
 function fmtCents(c) {
   if (c === 0) return "0¢";
   return (c > 0 ? "+" : "−") + Math.abs(c).toFixed(0) + "¢";
+}
+
+/* Chromatic interval label from root (0–11) */
+function chromaticLabel(semi) {
+  const map = {
+    0: "1",
+    1: "♭2",
+    2: "2",
+    3: "♭3",
+    4: "3",
+    5: "4",
+    6: "♯4",
+    7: "5",
+    8: "♭6",
+    9: "6",
+    10: "♭7",
+    11: "7"
+  };
+  return map[(semi + 120) % 12];
 }
 
 /* -----------------------------------------------------------
@@ -858,6 +900,8 @@ function buildFretboard() {
     stepsPanel.style.display = "none";
   }
 
+  const rootIdx = noteIndex(state.root);
+
   for (let fret = 0; fret < TOTAL_FRETS; fret++) {
     const row = document.createElement("div");
     row.className = "fret-row";
@@ -872,9 +916,20 @@ function buildFretboard() {
       cell.className = "note-cell";
 
       const noteName = transpose(openNote, fret);
+      const noteIdx = noteIndex(noteName);
+      const semiFromRoot = (noteIdx - rootIdx + 120) % 12;
+
       const isRoot = noteName === state.root;
       const inScale = scaleNotes.includes(noteName);
       const isTriad = triadNotes.includes(noteName);
+
+      if (state.toggles.chordOverlay && isTriad) {
+        cell.classList.add("chord-note");
+      }
+
+      if (state.toggles.intervalHighlight) {
+        cell.classList.add("interval-highlight");
+      }
 
       if (state.toggles.tonalDot && (isRoot || inScale)) {
         const d = document.createElement("div");
@@ -896,13 +951,21 @@ function buildFretboard() {
 
       const noteDiv = document.createElement("div");
       noteDiv.className = "note-name";
-      noteDiv.textContent = state.toggles.octaves ? `${noteName}${octave}` : noteName;
+      const baseName = state.toggles.names ? noteName : "";
+      noteDiv.textContent = state.toggles.octaves ? `${baseName}${octave}` : baseName || noteName;
       noteDiv.style.color =
         isRoot ? "var(--root)" :
         isTriad ? "var(--triad)" :
         inScale ? "var(--scale)" :
         "var(--chromatic)";
       cell.appendChild(noteDiv);
+
+      if (state.toggles.intervalHighlight) {
+        const intDiv = document.createElement("div");
+        intDiv.className = "note-interval";
+        intDiv.textContent = chromaticLabel(semiFromRoot);
+        cell.appendChild(intDiv);
+      }
 
       if (inScale) {
         const deg = scaleNotes.indexOf(noteName);
@@ -926,14 +989,36 @@ function buildFretboard() {
       bottom.className = "note-bottom";
 
       const midi = midiFor(noteName, octave);
+      const hz = hzFor(midi);
+
       if (state.toggles.hz) {
-        const hz = document.createElement("div");
-        hz.textContent = fmtHz(hzFor(midi)) + " Hz";
-        bottom.appendChild(hz);
+        const hzDiv = document.createElement("div");
+        hzDiv.textContent = fmtHz(hz) + " Hz";
+        bottom.appendChild(hzDiv);
       }
+
       if (state.toggles.absCents) {
         const ac = document.createElement("div");
-        ac.textContent = fmt<script>
+        const centsFromA440 = (midi - 69) * 100;
+        ac.textContent = fmtCents(centsFromA440);
+        bottom.appendChild(ac);
+      }
+
+      if (state.toggles.intCents) {
+        const ic = document.createElement("div");
+        const centsFromRoot = semiFromRoot * 100;
+        ic.textContent = fmtCents(centsFromRoot);
+        bottom.appendChild(ic);
+      }
+
+      cell.appendChild(bottom);
+      row.appendChild(cell);
+    });
+
+    fb.appendChild(row);
+  }
+}
+
 /* -----------------------------------------------------------
    BUILD ROOT SELECT
 ----------------------------------------------------------- */
@@ -1085,3 +1170,6 @@ function init() {
 
 document.addEventListener("DOMContentLoaded", init);
 </script>
+
+</body>
+</html>
