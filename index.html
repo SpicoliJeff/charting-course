@@ -2,716 +2,816 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Functional Fretboard</title>
+<title>Fretboard Prosody Lab – Modes, Chords, CAGED</title>
 <style>
-:root {
-  --bg: #020617;
-  --bg-panel: #0a0f1f;
-  --border: #1e293b;
-  --text: #e5e7eb;
-  --text-muted: #94a3b8;
-  --root: #fb923c;
-  --scale: #22c55e;
-  --triad: #f9fafb;
-  --chromatic: #a855f7;
-  --dominant: #f97316;
-  --leading: #ef4444;
-  --outside: #a78bfa;
-  --story: #60a5fa;
-  --stable: #22c55e;
-  --accent: #38bdf8;
-  --accent-soft: rgba(56,189,248,0.15);
+:root{
+  --bg:#050816;
+  --bg-panel:#0b1020;
+  --bg-panel-soft:#111827;
+  --border:#1f2937;
+  --border-soft:#374151;
+  --accent:#38bdf8;
+  --accent-soft:rgba(56,189,248,0.2);
+  --accent-strong:rgba(56,189,248,0.9);
+  --text:#e5e7eb;
+  --text-soft:#9ca3af;
+  --text-muted:#6b7280;
+  --danger:#f97373;
+  --shadow-soft:0 18px 40px rgba(15,23,42,0.85);
+  --radius-lg:18px;
+  --radius-md:12px;
+  --radius-sm:8px;
+  --radius-pill:999px;
+  --chip-bg:#020617;
+  --chip-border:#1f2937;
+  --chip-active-bg:#0f172a;
+  --chip-active-border:#38bdf8;
+  --chip-active-text:#e5f2ff;
+  --tab-bg:#020617;
+  --tab-active-bg:#0b1120;
+  --tab-border:#1f2937;
+  --tab-active-border:#38bdf8;
+  --dot-root:#f97316;
+  --dot-scale:#22c55e;
+  --dot-family:#a855f7;
+  --feel-stable:#22c55e;
+  --feel-forward:#facc15;
+  --feel-dominant:#fb7185;
+  --feel-leading:#38bdf8;
+  --feel-story:#a855f7;
+  --feel-outside:#f97316;
 }
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
 }
-.app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+body{
+  margin:0;
+  padding:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+  background:radial-gradient(circle at top,#1f2937 0,#020617 55%,#000 100%);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.title {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
+.app-shell{
+  width:100%;
+  max-width:1320px;
+  margin:24px auto;
+  padding:0 16px;
 }
-.subtitle {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--text-muted);
+.app-frame{
+  background:radial-gradient(circle at top left,#020617 0,#020617 40%,#000 100%);
+  border-radius:var(--radius-lg);
+  border:1px solid rgba(148,163,184,0.25);
+  box-shadow:var(--shadow-soft);
+  padding:18px 18px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  position:relative;
+  overflow:hidden;
 }
-.control-panel {
-  margin-top: 20px;
-  padding: 16px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+.app-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+.app-title-block{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
 }
-.label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.app-title{
+  font-size:18px;
+  font-weight:650;
+  letter-spacing:0.03em;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
-.select {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 12px;
+.app-title-pill{
+  font-size:11px;
+  font-weight:500;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.5);
+  color:var(--text-soft);
+  background:radial-gradient(circle at top,#020617 0,#020617 60%,#020617 100%);
 }
-.toggle-row {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.app-subtitle{
+  font-size:11px;
+  color:var(--text-soft);
 }
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
+.app-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
-.toggle.active {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
+.chip-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--border);
+.chip-label{
+  font-size:11px;
+  color:var(--text-muted);
 }
-.toggle.active .dot {
-  background: var(--accent);
+.chip{
+  font-size:11px;
+  padding:4px 9px;
+  border-radius:999px;
+  border:1px solid var(--chip-border);
+  background:var(--chip-bg);
+  color:var(--text-soft);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:all 0.16s ease-out;
 }
-#degreeModeRow .toggle {
-  min-width: 90px;
-  justify-content: center;
+.chip-dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:rgba(148,163,184,0.6);
 }
-.main-area {
-  margin-top: 20px;
-  display: flex;
-  gap: 20px;
-  height: calc(100vh - 220px);
+.chip.active{
+  border-color:var(--chip-active-border);
+  background:var(--chip-active-bg);
+  color:var(--chip-active-text);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.4);
 }
-.fretboard-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  overflow: hidden;
-  position: relative;
+.chip.active .chip-dot{
+  background:var(--accent-strong);
 }
-.steps-panel {
+.app-main{
+  display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(0,1.1fr);
+  gap:12px;
+  align-items:stretch;
+}
+.fretboard-panel{
+  flex:1;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  overflow:hidden;
+  position:relative;
+}
+.fretboard-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+  gap:8px;
+}
+.fretboard-title{
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--text-soft);
+}
+.fretboard-subtitle{
+  font-size:11px;
+  color:var(--text-muted);
+}
+.selector-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.selector-group{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.selector-label{
+  font-size:11px;
+  color:var(--text-muted);
+}
+select{
+  background:#020617;
+  border-radius:999px;
+  border:1px solid var(--border-soft);
+  color:var(--text);
+  font-size:11px;
+  padding:4px 10px;
+  outline:none;
+}
+.toggle-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+.toggle-row-label{
+  font-size:11px;
+  color:var(--text-muted);
+  margin-right:4px;
+  align-self:center;
+}
+.toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid var(--border-soft);
+  background:#020617;
+  color:var(--text-soft);
+  font-size:11px;
+  cursor:pointer;
+  transition:all 0.16s ease-out;
+}
+.toggle .dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:rgba(148,163,184,0.7);
+}
+.toggle.active{
+  border-color:var(--accent);
+  background:rgba(15,23,42,0.95);
+  color:var(--accent-strong);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.4);
+}
+.toggle.active .dot{
+  background:var(--accent-strong);
+}
+.degree-mode-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:6px;
+}
+.degree-mode-label{
+  font-size:11px;
+  color:var(--text-muted);
+}
+.degree-mode-chip{
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid var(--border-soft);
+  background:#020617;
+  color:var(--text-soft);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  transition:all 0.16s ease-out;
+}
+.degree-mode-chip .dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:rgba(148,163,184,0.7);
+}
+.degree-mode-chip.active{
+  border-color:var(--accent);
+  background:rgba(15,23,42,0.95);
+  color:var(--accent-strong);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.4);
+}
+.degree-mode-chip.active .dot{
+  background:var(--accent-strong);
+}
+.fretboard{
+  flex:1;
+  overflow-y:visible;
+  padding-right:6px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.fret-row{
+  display:grid;
+  grid-template-columns:40px repeat(6,110px);
+  gap:6px;
+  align-items:stretch;
+}
+.fret-number{
+  font-size:11px;
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.note-cell{
+  position:relative;
+  border-radius:8px;
+  border:1px solid rgba(31,41,55,0.9);
+  background:radial-gradient(circle at top,#020617 0,#020617 55%,#020617 100%);
+  min-height:56px;
+  padding:4px 6px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:1px;
+  cursor:pointer;
+  transition:all 0.14s ease-out;
+}
+.note-cell:hover{
+  border-color:rgba(56,189,248,0.7);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.35);
+}
+.note-name{
+  font-size:12px;
+  font-weight:600;
+  color:var(--text);
+  text-align:center;
+  width:100%;
+}
+.note-interval{
+  font-size:10px;
+  color:var(--accent);
+}
+.note-solfege{
+  font-size:10px;
+  color:var(--text-soft);
+}
+.note-feel-line{
+  font-size:9px;
+  margin-top:1px;
+}
+.note-feel-line.feel-stable{
+  color:var(--feel-stable);
+}
+.note-feel-line.feel-forward{
+  color:var(--feel-forward);
+}
+.note-feel-line.feel-dominant{
+  color:var(--feel-dominant);
+}
+.note-feel-line.feel-leading{
+  color:var(--feel-leading);
+}
+.note-feel-line.feel-story{
+  color:var(--feel-story);
+}
+.note-feel-line.feel-outside{
+  color:var(--feel-outside);
+}
+.note-bottom{
+  margin-top:auto;
+  font-size:9px;
+  color:var(--text-muted);
+}
+.scale-degree-label{
+  position:absolute;
+  top:4px;
+  right:6px;
+  font-size:10px;
+  color:var(--accent-strong);
+  padding:1px 5px;
+  border-radius:999px;
+  background:rgba(15,23,42,0.95);
+  border:1px solid rgba(56,189,248,0.6);
+}
+.dot-root{
+  position:absolute;
+  left:6px;
+  bottom:6px;
+  width:9px;
+  height:9px;
+  border-radius:999px;
+  background:var(--dot-root);
+  box-shadow:0 0 0 2px rgba(248,113,113,0.4);
+}
+.dot-scale{
+  position:absolute;
+  left:18px;
+  bottom:6px;
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--dot-scale);
+  box-shadow:0 0 0 2px rgba(34,197,94,0.4);
+}
+.dot-family{
+  position:absolute;
+  left:30px;
+  bottom:6px;
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--dot-family);
+  box-shadow:0 0 0 2px rgba(168,85,247,0.4);
+}
+.interval-highlight{
+  box-shadow:0 0 0 1px rgba(56,189,248,0.5);
+}
+.chord-note{
+  border-color:rgba(244,114,182,0.9);
+  box-shadow:0 0 0 1px rgba(244,114,182,0.7);
+}
+.triad-root{
+  box-shadow:0 0 0 2px rgba(248,113,113,0.9);
+}
+.triad-third{
+  box-shadow:0 0 0 2px rgba(251,191,36,0.9);
+}
+.triad-fifth{
+  box-shadow:0 0 0 2px rgba(52,211,153,0.9);
+}
+.triad-diamond {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(10,15,31,0.9);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 11px;
-  pointer-events: none;
-  z-index: 5;
-}
-.steps-title {
-  color: var(--accent);
-  font-size: 11px;
-  margin-bottom: 2px;
-}
-.steps-pattern {
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
-}
-.fretboard {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  height: 100%;
-}
-.fret-row {
-  display: grid;
-  grid-template-columns: 30px repeat(6, 80px);
-  gap: 4px;
-  align-items: stretch;
-}
-.fret-number {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-align: right;
-  padding-right: 6px;
-  display: flex;
-  align-items: center;
-}
-.note-cell {
-  position: relative;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 4px;
-  min-height: 85px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-}
-.note-cell.chord-note {
-  box-shadow: 0 0 0 2px rgba(249,250,251,0.4);
-  border-color: var(--triad);
-}
-.note-cell.interval-highlight {
-  background: radial-gradient(circle at center, rgba(56,189,248,0.18), var(--bg));
-}
-.dot-root,
-.dot-scale,
-.dot-family {
-  position: absolute;
-  top: 4px;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  cursor: pointer;
-  z-index: 2;
-}
-.dot-root { left: 4px; background: var(--root); }
-.dot-scale { left: 14px; background: var(--scale); }
-.dot-family { left: 24px; background: var(--accent); }
-.note-name {
-  margin-top: 6px;
-  font-size: 15px;
-  font-weight: 700;
-}
-.note-interval {
-  margin-top: 1px;
-  font-size: 11px;
-  color: var(--text-muted);
-  font-family: ui-monospace, monospace;
-}
-.note-solfege {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--accent);
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-}
-.note-feel-line {
-  margin-top: 1px;
-  font-size: 10px;
-  text-align: center;
-  line-height: 1.2;
-}
-.feel-stable { color: var(--stable); }
-.feel-forward { color: var(--accent); }
-.feel-dominant { color: var(--dominant); }
-.feel-leading { color: var(--leading); }
-.feel-outside { color: var(--outside); }
-.feel-story { color: var(--story); }
-.note-bottom {
-  margin-top: auto;
-  font-size: 10px;
-  color: var(--text-muted);
-  text-align: center;
-  font-family: ui-monospace, monospace;
-}
-.theory-panel {
-  margin-top: 10px;
-  padding: 12px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-.theory-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.theory-line {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-.side-panel {
-  width: 320px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-}
-.tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.tab {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-.tab.active {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-.scale-degree-label {
-  position: absolute;
-  left: 4px;
+  right: -10px;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  font-family: ui-monospace, monospace;
+  transform: translateY(-50%) rotate(45deg);
+  background: transparent;
+  border: 2px solid;
+  border-radius: 4px;
   pointer-events: none;
-  white-space: nowrap;
 }
-
-/* SCALE OUTLINE COLORS */
-.scale-outline-1 { outline: 2px solid #ffb86c; border-radius: 8px; }
-.scale-outline-b2 { outline: 2px solid #d00000; border-radius: 8px; }
-.scale-outline-2 { outline: 2px solid #8be9fd; border-radius: 8px; }
-.scale-outline-b3 { outline: 2px solid #ff7f50; border-radius: 8px; }
-.scale-outline-3 { outline: 2px solid #f1fa8c; border-radius: 8px; }
-.scale-outline-4 { outline: 2px solid #4aa8ff; border-radius: 8px; }
-.scale-outline-s4 { outline: 2px solid #00e5ff; border-radius: 8px; }
-.scale-outline-5 { outline: 2px solid #50fa7b; border-radius: 8px; }
-.scale-outline-b6 { outline: 2px solid #c00040; border-radius: 8px; }
-.scale-outline-6 { outline: 2px solid #9aff6c; border-radius: 8px; }
-.scale-outline-b7 { outline: 2px solid #ff4fa3; border-radius: 8px; }
-.scale-outline-7 { outline: 2px solid #ff79c6; border-radius: 8px; }
-.scale-outline-9 { outline: 2px solid #60a5fa; border-radius: 8px; }
-.scale-outline-11 { outline: 2px solid #a78bfa; border-radius: 8px; }
-.scale-outline-13 { outline: 2px solid #ffb3c6; border-radius: 8px; }
-
-/* TRIAD SHAPE OUTLINES */
-.triad-root {
-  outline: 3px solid #ffb86c;
-  border-radius: 4px;
-  transform: rotate(45deg);
+.triad-root-diamond {
+  width: 18px;
+  height: 18px;
+  border-color: #f97316;
 }
-.triad-third {
-  outline: 2px solid #ff79c6;
-  border-radius: 4px;
-  transform: rotate(45deg);
+.triad-third-diamond {
+  width: 14px;
+  height: 14px;
+  border-color: #facc15;
 }
-.triad-fifth {
-  outline: 2px solid #8be9fd;
-  border-radius: 4px;
-  transform: rotate(45deg);
+.triad-fifth-diamond {
+  width: 10px;
+  height: 10px;
+  border-color: #34d399;
 }
-
-.side-section {
-  margin-bottom: 12px;
+.caged-C{
+  box-shadow:0 0 0 2px rgba(96,165,250,0.8) inset;
 }
-.side-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 4px;
+.caged-A{
+  box-shadow:0 0 0 2px rgba(52,211,153,0.8) inset;
 }
-.side-text {
-  font-size: 11px;
-  color: var(--text-muted);
+.caged-G{
+  box-shadow:0 0 0 2px rgba(251,191,36,0.8) inset;
 }
-.side-mono {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-family: ui-monospace, monospace;
+.caged-E{
+  box-shadow:0 0 0 2px rgba(248,113,113,0.8) inset;
 }
-.pronounce-box {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+.caged-D{
+  box-shadow:0 0 0 2px rgba(192,132,252,0.8) inset;
 }
-.pronounce-title {
-  font-size: 11px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 4px;
+.scale-run-node{
+  border-color:var(--accent);
 }
-.pronounce-text {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
+.scale-run-node::after{
+  content:"↗";
+  position:absolute;
+  right:4px;
+  bottom:4px;
+  font-size:10px;
+  color:var(--accent);
 }
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+.note-info-bubble{
+  position:absolute;
+  z-index:20;
+  left:4px;
+  top:4px;
+  right:4px;
+  padding:6px 7px;
+  border-radius:8px;
+  background:rgba(15,23,42,0.98);
+  border:1px solid rgba(56,189,248,0.7);
+  box-shadow:0 14px 30px rgba(15,23,42,0.9);
 }
-.chip {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
+.note-info-title{
+  font-size:11px;
+  font-weight:600;
+  margin-bottom:2px;
+  color:var(--accent-strong);
 }
-.chip.strong {
-  border-color: var(--accent);
-  color: var(--accent);
+.note-info-text{
+  font-size:10px;
+  color:var(--text-soft);
 }
-.chords-layout {
-  display: flex;
-  gap: 8px;
+.side-panel{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
-.degree-list {
-  flex: 1;
-  max-height: 260px;
-  overflow-y: auto;
-  border-right: 1px solid var(--border);
-  padding-right: 6px;
+.side-card{
+  background:var(--bg-panel);
+  border-radius:10px;
+  border:1px solid var(--border);
+  padding:10px;
 }
-.degree-item {
-  padding: 4px 6px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
-  margin-bottom: 4px;
+.side-title{
+  font-size:12px;
+  font-weight:600;
+  margin-bottom:4px;
 }
-.degree-item.active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
+.side-line{
+  font-size:11px;
+  color:var(--text-soft);
 }
-.degree-main {
-  display: flex;
-  justify-content: space-between;
-  font-family: ui-monospace, monospace;
+.tabs{
+  display:flex;
+  gap:6px;
+  margin-top:6px;
+  margin-bottom:6px;
 }
-.degree-sub {
-  font-size: 10px;
-  color: var(--text-muted);
+.tab{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--tab-border);
+  background:var(--tab-bg);
+  color:var(--text-soft);
+  cursor:pointer;
+  transition:all 0.16s ease-out;
 }
-.chord-detail {
-  flex: 1;
-  font-size: 11px;
-  color: var(--text-muted);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.tab.active{
+  border-color:var(--tab-active-border);
+  background:var(--tab-active-bg);
+  color:var(--accent-strong);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.4);
 }
-.chord-type-select {
-  margin-bottom: 6px;
+.tab-panel{
+  margin-top:4px;
+  font-size:11px;
+  color:var(--text-soft);
 }
-.chord-detail-row {
-  display: flex;
-  gap: 4px;
+#tabPronounce,
+#tabChords{
+  display:none;
 }
-.chord-detail-label {
-  font-weight: 600;
-  color: var(--text);
+.steps-panel{
+  margin-top:6px;
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px dashed rgba(148,163,184,0.5);
+  background:rgba(15,23,42,0.7);
 }
-.chord-tones {
-  font-family: ui-monospace, monospace;
+.steps-title{
+  font-size:11px;
+  font-weight:600;
+  margin-bottom:2px;
 }
-.chord-logic-block {
-  margin-top: 6px;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+.steps-pattern{
+  font-size:11px;
+  color:var(--accent-strong);
 }
-.chord-logic-title {
-  font-size: 11px;
-  color: var(--accent);
-  margin-bottom: 4px;
+.chord-panel{
+  margin-top:6px;
+  padding:6px 8px;
+  border-radius:8px;
+  border:1px solid rgba(55,65,81,0.9);
+  background:rgba(15,23,42,0.9);
 }
-.chord-logic-line {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-bottom: 2px;
+.chord-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  margin-bottom:4px;
 }
-.note-info-bubble {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  z-index: 10;
-  max-width: 180px;
-  background: rgba(15,23,42,0.98);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 6px;
+.chord-title{
+  font-size:11px;
+  font-weight:600;
 }
-.note-info-title {
-  font-size: 11px;
-  color: var(--accent);
-  margin-bottom: 2px;
+.chord-select{
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid var(--border-soft);
+  background:#020617;
+  color:var(--text-soft);
 }
-.note-info-text {
-  font-size: 10px;
-  color: var(--text-muted);
-  line-height: 1.3;
+.chord-line{
+  font-size:11px;
+  color:var(--text-soft);
+  margin-top:2px;
+}
+.degree-list{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.degree-item{
+  padding:4px 6px;
+  border-radius:7px;
+  border:1px solid rgba(31,41,55,0.9);
+  background:rgba(15,23,42,0.9);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+  transition:all 0.14s ease-out;
+}
+.degree-item.active{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.5);
+}
+.degree-main{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+}
+.degree-sub{
+  font-size:10px;
+  color:var(--text-muted);
+}
+@media (max-width:980px){
+  .app-main{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 <body>
-<div id="app" class="app">
-<header class="header">
-  <h1 class="title">Functional Fretboard</h1>
-  <div class="subtitle">Vertical 24‑fret hybrid prosody scale & chord explorer</div>
-</header>
-<section class="control-panel">
-
-  <div class="row row-main-selects">
-    <div class="control-block">
-      <label class="label">Root</label>
-      <select id="rootSelect" class="select"></select>
-    </div>
-
-    <div class="control-block">
-      <label class="label">Scale</label>
-      <select id="scaleSelect" class="select"></select>
-    </div>
-  </div>
-
-  <div class="row toggle-row" id="toggleRow1">
-    <span class="label">Display</span>
-    <div class="toggle" data-toggle="names"><div class="dot"></div>Names</div>
-    <div class="toggle" data-toggle="octaves"><div class="dot"></div>Oct</div>
-    <div class="toggle" data-toggle="hz"><div class="dot"></div>Hz</div>
-    <div class="toggle" data-toggle="absCents"><div class="dot"></div>Abs¢</div>
-    <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int¢</div>
-  </div>
-
-  <div class="row toggle-row" id="toggleRow2">
-    <span class="label">Prosody</span>
-    <div class="toggle" data-toggle="steps"><div class="dot"></div>Steps</div>
-    <div class="toggle" data-toggle="doFeel"><div class="dot"></div>Do Feel</div>
-    <div class="toggle" data-toggle="laFeel"><div class="dot"></div>La Feel</div>
-    <div class="toggle" data-toggle="tonalDot"><div class="dot"></div>TonalDot</div>
-    <div class="toggle" data-toggle="modeDot"><div class="dot"></div>ModeDot</div>
-    <div class="toggle" data-toggle="familyDot"><div class="dot"></div>FamilyDot</div>
-    <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
-    <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
-    <div class="toggle" data-toggle="triadShapes"><div class="dot"></div>Triad Shapes</div>
-  </div>
-
-  <div class="row toggle-row" id="degreeModeRow">
-    <span class="label">Degree Mode</span>
-    <div class="toggle" data-degmode="string"><div class="dot"></div>Per String</div>
-    <div class="toggle" data-degmode="octave"><div class="dot"></div>Per Octave</div>
-    <div class="toggle" data-degmode="arrows"><div class="dot"></div>Arrows</div>
-  </div>
-
-</section>
-
-<section class="main-area">
-
-  <div class="fretboard-panel">
-
-    <div id="stepsPanel" class="steps-panel" style="display:none;">
-      <div id="stepsTitle" class="steps-title"></div>
-      <div id="stepsPattern" class="steps-pattern"></div>
-    </div>
-
-    <div id="fretboard" class="fretboard"></div>
-
-    <section class="theory-panel">
-      <div class="theory-title">Scale Theory</div>
-      <div id="theoryName" class="theory-line"></div>
-      <div id="theoryFamily" class="theory-line"></div>
-      <div id="theoryIntervals" class="theory-line"></div>
-      <div id="theorySteps" class="theory-line"></div>
-      <div id="theoryFeel" class="theory-line"></div>
-
-      <div class="theory-title" style="margin-top:10px;">Key Behavior</div>
-      <div id="theoryKeyBehavior" class="theory-line"></div>
-    </section>
-
-  </div>
-
-  <aside class="side-panel">
-
-    <div class="tabs">
-      <div class="tab active" data-tab="scales">Scales</div>
-      <div class="tab" data-tab="pronounce">Pronounce</div>
-      <div class="tab" data-tab="chords">Chords</div>
-    </div>
-
-    <div id="tabScales" class="tab-content">
-
-      <div class="side-section">
-        <div class="side-title">Scale Families</div>
-        <div class="side-text">
-          Grouped by function: major, minor, dominant, symmetric, pentatonic, Japanese, exotic.
+<div class="app-shell">
+  <div class="app-frame">
+    <div class="app-header">
+      <div class="app-title-block">
+        <div class="app-title">
+          Fretboard Prosody Lab
+          <span class="app-title-pill">Modes · Chords · CAGED</span>
+        </div>
+        <div class="app-subtitle">
+          See every note as a role in the story — tonic, tension, release — across the whole neck.
         </div>
       </div>
-
-      <div class="side-section">
-        <div class="side-title">Current Selection</div>
-        <div id="sideCurrent" class="side-mono"></div>
-        <div id="sideIntervals" class="side-mono"></div>
-        <div id="sideSteps" class="side-mono"></div>
+      <div class="app-controls">
+        <div class="chip-row">
+          <div class="chip-label">Prosody Focus</div>
+          <div class="chip active">
+            <div class="chip-dot"></div>
+            Scale Degrees
+          </div>
+          <div class="chip">
+            <div class="chip-dot"></div>
+            Chord Gravity
+          </div>
+          <div class="chip">
+            <div class="chip-dot"></div>
+            CAGED Shapes
+          </div>
+        </div>
       </div>
-
     </div>
-<div id="tabPronounce" class="tab-content" style="display:none;">
-
-  <div class="pronounce-box">
-    <div class="pronounce-title">Pronunciation Engine</div>
-    <div id="pronounceLine" class="pronounce-text">
-      Double‑click a note (future hook) to see vowel, register, and resonance coaching.
-    </div>
-
-    <div class="chip-row">
-      <div class="chip strong">Movable‑Do</div>
-      <div class="chip strong">Movable‑La</div>
-      <div class="chip">Bright vs dark vowels</div>
-      <div class="chip">Register hints</div>
-    </div>
-  </div>
-
-</div>
-
-<div id="tabChords" class="tab-content" style="display:none;">
-
-  <div class="side-section">
-    <div class="side-title">Chord Builder</div>
-
-    <div class="chords-layout">
-
-      <div class="degree-list" id="degreeList"></div>
-
-      <div class="chord-detail">
-
-        <div class="chord-type-select">
-          <label class="label">Chord Type</label>
-          <select id="chordTypeSelect" class="select">
-            <option value="maj">maj</option>
-            <option value="min">min</option>
-            <option value="dim">dim</option>
-            <option value="aug">aug</option>
-            <option value="sus2">sus2</option>
-            <option value="sus4">sus4</option>
-            <option value="power">5 (power)</option>
-            <option value="maj7">maj7</option>
-            <option value="min7">min7</option>
-            <option value="dom7">dom7</option>
-            <option value="halfdim7">half‑dim7</option>
-            <option value="dim7">dim7</option>
-            <option value="add9">add9</option>
-            <option value="add11">add11</option>
-            <option value="add13">add13</option>
-          </select>
+    <div class="app-main">
+      <div class="fretboard-panel">
+        <div class="fretboard-header">
+          <div>
+            <div class="fretboard-title">Fretboard Map</div>
+            <div class="fretboard-subtitle">Every note labeled by function, feel, and frequency.</div>
+          </div>
+          <div class="selector-row">
+            <div class="selector-group">
+              <div class="selector-label">Root</div>
+              <select id="rootSelect"></select>
+            </div>
+            <div class="selector-group">
+              <div class="selector-label">Scale / Mode</div>
+              <select id="scaleSelect"></select>
+            </div>
+          </div>
         </div>
-
-        <div class="chord-detail-row">
-          <span class="chord-detail-label">Chord Name:</span>
-          <span id="chordName"></span>
+        <div class="toggle-row" id="toggleRow1">
+          <div class="toggle-row-label">Note Data</div>
+          <div class="toggle" data-toggle="names"><div class="dot"></div>Names</div>
+          <div class="toggle" data-toggle="octaves"><div class="dot"></div>Octaves</div>
+          <div class="toggle" data-toggle="hz"><div class="dot"></div>Hz</div>
+          <div class="toggle" data-toggle="absCents"><div class="dot"></div>Abs Cents</div>
+          <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int Cents</div>
+          <div class="toggle" data-toggle="steps"><div class="dot"></div>Steps</div>
         </div>
-
-        <div class="chord-detail-row">
-          <span class="chord-detail-label">Formula:</span>
-          <span id="chordFormula"></span>
+        <div class="toggle-row" id="toggleRow2">
+          <div class="toggle-row-label">Prosody</div>
+          <div class="toggle" data-toggle="doFeel"><div class="dot"></div>Do‑based</div>
+          <div class="toggle" data-toggle="laFeel"><div class="dot"></div>La‑based</div>
+          <div class="toggle" data-toggle="tonalDot"><div class="dot"></div>Tonal Root</div>
+          <div class="toggle" data-toggle="modeDot"><div class="dot"></div>Mode</div>
+          <div class="toggle" data-toggle="familyDot"><div class="dot"></div>Family</div>
+          <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
+          <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
+          <div class="toggle" data-toggle="triadShapes"><div class="dot"></div>Triad Shapes</div>
+          <div class="toggle" data-toggle="caged"><div class="dot"></div>CAGED</div>
+          <div class="toggle" data-toggle="scaleRuns"><div class="dot"></div>Runs</div>
         </div>
-
-        <div class="chord-detail-row">
-          <span class="chord-detail-label">Chord Tones:</span>
-          <span id="chordTones" class="chord-tones"></span>
+        <div class="degree-mode-row">
+          <div class="degree-mode-label">Degree View</div>
+          <div class="degree-mode-chip active" data-degmode="string">
+            <div class="dot"></div>Per String
+          </div>
+          <div class="degree-mode-chip" data-degmode="global">
+            <div class="dot"></div>Global
+          </div>
+          <div class="degree-mode-chip" data-degmode="arrows">
+            <div class="dot"></div>Arrows
+          </div>
         </div>
-
-        <div class="chord-logic-block">
-          <div class="chord-logic-title">Hybrid Chord Logic</div>
-          <div class="chord-logic-line"><strong>Diatonic Base:</strong> Chords begin on the selected scale degree, using the scale’s notes as the foundation.</div>
-          <div class="chord-logic-line"><strong>Chromatic Extensions:</strong> If the chord type requires tones outside the scale (maj7, dom7, aug, dim7, add9, etc.), those tones are added chromatically.</div>
-          <div class="chord-logic-line"><strong>Alteration Handling:</strong> Chromatic tones are labeled with interval notation (♭2, ♯4, ♭6, etc.) and highlighted as altered tones.</div>
-          <div class="chord-logic-line"><strong>Functional Behavior:</strong> Triads and sevenths follow diatonic function; extended and altered chords follow chromatic function.</div>
-          <div class="chord-logic-line"><strong>Prosody Integration:</strong> Chord tones still receive solfege + feel lines based on the underlying scale, even when chromatic tones appear.</div>
-          <div class="chord-logic-line"><strong>Interval Labels:</strong> Every note shows its interval from the scale root: scale tones as diatonic degrees, chromatic tones as chromatic labels.</div>
+        <div class="fretboard" id="fretboard"></div>
+        <div class="steps-panel" id="stepsPanel">
+          <div class="steps-title" id="stepsTitle"></div>
+          <div class="steps-pattern" id="stepsPattern"></div>
         </div>
-
       </div>
-
+      <div class="side-panel">
+        <div class="side-card">
+          <div class="side-title" id="theoryName">A Aeolian</div>
+          <div class="side-line" id="theoryFamily">Family: Minor Modes</div>
+          <div class="side-line" id="theoryIntervals">Intervals: 0 2 3 5 7 8 10</div>
+          <div class="side-line" id="theorySteps">Steps: W – H – W – W – H – W – W</div>
+          <div class="side-line" id="theoryFeel">Prosody: Movable‑La (minor)</div>
+          <div class="side-line" id="theoryKeyBehavior"></div>
+        </div>
+        <div class="side-card">
+          <div class="side-title">Current Shape</div>
+          <div class="side-line" id="sideCurrent">A Aeolian</div>
+          <div class="side-line" id="sideIntervals">Intervals: 0 2 3 5 7 8 10</div>
+          <div class="side-line" id="sideSteps">Steps: W – H – W – W – H – W – W</div>
+          <div class="tabs">
+            <div class="tab active" data-tab="scales">Scale Story</div>
+            <div class="tab" data-tab="pronounce">Pronounce</div>
+            <div class="tab" data-tab="chords">Chords</div>
+          </div>
+          <div class="tab-panel" id="tabScales">
+            In this view, every note is labeled by its role in the key — tonic, tension, release — not just its letter name.
+          </div>
+          <div class="tab-panel" id="tabPronounce">
+            Movable‑Do and Movable‑La solfege let you hear the gravity of each note: Do/La as home, So/Re as pillars, Ti as leading tone.
+          </div>
+          <div class="tab-panel" id="tabChords">
+            Each scale degree can host a chord. The chord panel below shows the chord built on the selected degree and how it colors the scale.
+          </div>
+        </div>
+        <div class="side-card chord-panel">
+          <div class="chord-header">
+            <div class="chord-title" id="chordName">A min7 (i)</div>
+            <select id="chordTypeSelect" class="chord-select">
+              <option value="min7">min7</option>
+              <option value="maj7">maj7</option>
+              <option value="dom7">7 (dom)</option>
+              <option value="halfdim7">ø7</option>
+              <option value="dim7">dim7</option>
+              <option value="maj">Maj</option>
+              <option value="min">Min</option>
+              <option value="dim">Dim</option>
+              <option value="aug">Aug</option>
+              <option value="sus2">Sus2</option>
+              <option value="sus4">Sus4</option>
+              <option value="power">5 (Power)</option>
+              <option value="add9">add9</option>
+              <option value="add11">add11</option>
+              <option value="add13">add13</option>
+            </select>
+          </div>
+          <div class="chord-line" id="chordFormula">1 – ♭3 – 5 – ♭7</div>
+          <div class="chord-line" id="chordTones">A (1), C (♭3), E (5), G (♭7)</div>
+          <div class="degree-list" id="degreeList"></div>
+        </div>
+      </div>
     </div>
-
-  </div>
-
-</div>
-
-</aside>
-
-</section>
-
-</div>
 <script>
-const NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
-STRINGS=["E","B","G","D","A","E"],
-TOTAL_FRETS=25,
-SCALE_FAMILIES=[
-  {id:"major_modes",label:"Major Modes",familyType:"major",scales:[
-    {id:"ionian",name:"Ionian (Major)",intervals:[0,2,4,5,7,9,11],steps:["W","W","H","W","W","W","H"]},
-    {id:"lydian",name:"Lydian",intervals:[0,2,4,6,7,9,11],steps:["W","W","W","H","W","W","H"]},
-    {id:"mixolydian",name:"Mixolydian",intervals:[0,2,4,5,7,9,10],steps:["W","W","H","W","W","H","W"]}
-  ]},
-  {id:"minor_modes",label:"Minor Modes",familyType:"minor",scales:[
-    {id:"aeolian",name:"Aeolian (Natural Minor)",intervals:[0,2,3,5,7,8,10],steps:["W","H","W","W","H","W","W"]},
-    {id:"dorian",name:"Dorian",intervals:[0,2,3,5,7,9,10],steps:["W","H","W","W","W","H","W"]},
-    {id:"phrygian",name:"Phrygian",intervals:[0,1,3,5,7,8,10],steps:["H","W","W","W","H","W","W"]},
-    {id:"locrian",name:"Locrian",intervals:[0,1,3,5,6,8,10],steps:["H","W","W","H","W","W","W"]}
-  ]},
-  {id:"harmonic_minor",label:"Harmonic Minor",familyType:"minor",scales:[
-    {id:"harmonic_minor",name:"Harmonic Minor",intervals:[0,2,3,5,7,8,11],steps:["W","H","W","W","H","W+H","H"]}
-  ]},
-  {id:"melodic_minor",label:"Melodic Minor",familyType:"minor",scales:[
-    {id:"melodic_minor",name:"Melodic Minor (Jazz)",intervals:[0,2,3,5,7,9,11],steps:["W","H","W","W","W","W","H"]}
-  ]},
-  {id:"dominant_altered",label:"Dominant / Altered",familyType:"minor",scales:[
-    {id:"mixolydian_b9_b13",name:"Mixolydian ♭9 ♭13",intervals:[0,1,3,4,7,8,10],steps:["H","W","H","W+H","H","W+H","H"]},
-    {id:"altered",name:"Altered (Super Locrian)",intervals:[0,1,3,4,6,8,10],steps:["H","W","H","W","W","W","W"]}
-  ]},
-  {id:"symmetric",label:"Symmetric / Diminished",familyType:"neutral",scales:[
-    {id:"whole_tone",name:"Whole Tone",intervals:[0,2,4,6,8,10],steps:["W","W","W","W","W","W"]},
-    {id:"dim_hw",name:"Diminished (H–W)",intervals:[0,1,3,4,6,7,9,10],steps:["H","W","H","W","H","W","H","W"]},
-    {id:"dim_wh",name:"Diminished (W–H)",intervals:[0,2,3,5,6,8,9,11],steps:["W","H","W","H","W","H","W","H"]}
-  ]},
-  {id:"pentatonics",label:"Pentatonics",familyType:"mixed",scales:[
-    {id:"major_pent",name:"Major Pentatonic",intervals:[0,2,4,7,9],steps:["W","W","W+H","W","W+H"]},
-    {id:"minor_pent",name:"Minor Pentatonic",intervals:[0,3,5,7,10],steps:["W+H","W","W","W+H","W"]}
-  ]},
-  {id:"japanese",label:"Japanese / Traditional",familyType:"minor",scales:[
-    {id:"hirajoshi",name:"Hirajoshi",intervals:[0,2,3,7,8],steps:["W+H","H","W+H","H","W+H"]},
-    {id:"in_sen",name:"In Sen",intervals:[0,1,5,7,10],steps:["H","W+H","W","W+H","W"]}
-  ]},
-  {id:"exotic",label:"Exotic / Other",familyType:"minor",scales:[
-    {id:"phrygian_dom",name:"Phrygian Dominant",intervals:[0,1,4,5,7,8,10],steps:["H","W+H","H","W","H","W","W"]}
-  ]}
+const NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const STRINGS=["E","A","D","G","B","E"];
+const TOTAL_FRETS=22;
+
+const SCALE_FAMILIES=[
+  {
+    id:"major_modes",
+    label:"Major Modes",
+    familyType:"major",
+    scales:[
+      {id:"ionian",name:"Ionian (Major)",intervals:[0,2,4,5,7,9,11],steps:["W","W","H","W","W","W","H"]},
+      {id:"dorian",name:"Dorian",intervals:[0,2,3,5,7,9,10],steps:["W","H","W","W","W","H","W"]},
+      {id:"phrygian",name:"Phrygian",intervals:[0,1,3,5,7,8,10],steps:["H","W","W","W","H","W","W"]},
+      {id:"lydian",name:"Lydian",intervals:[0,2,4,6,7,9,11],steps:["W","W","W","H","W","W","H"]},
+      {id:"mixolydian",name:"Mixolydian",intervals:[0,2,4,5,7,9,10],steps:["W","W","H","W","W","H","W"]},
+      {id:"aeolian_majorfam",name:"Aeolian (Nat Minor)",intervals:[0,2,3,5,7,8,10],steps:["W","H","W","W","H","W","W"]},
+      {id:"locrian",name:"Locrian",intervals:[0,1,3,5,6,8,10],steps:["H","W","W","H","W","W","W"]}
+    ]
+  },
+  {
+    id:"minor_modes",
+    label:"Minor Modes",
+    familyType:"minor",
+    scales:[
+      {id:"aeolian",name:"Aeolian (Nat Minor)",intervals:[0,2,3,5,7,8,10],steps:["W","H","W","W","H","W","W"]},
+      {id:"dorian_minor",name:"Dorian",intervals:[0,2,3,5,7,9,10],steps:["W","H","W","W","W","H","W"]},
+      {id:"phrygian_minor",name:"Phrygian",intervals:[0,1,3,5,7,8,10],steps:["H","W","W","W","H","W","W"]},
+      {id:"harmonic_minor",name:"Harmonic Minor",intervals:[0,2,3,5,7,8,11],steps:["W","H","W","W","H","W+H","H"]},
+      {id:"melodic_minor",name:"Melodic Minor",intervals:[0,2,3,5,7,9,11],steps:["W","H","W","W","W","W","H"]}
+    ]
+  }
 ];
+
 const FEEL_DO={
   Do:[
     {text:"the home tonic – most stable note",class:"feel-stable"},
@@ -806,64 +906,80 @@ const state={
     familyDot:true,
     chordOverlay:true,
     intervalHighlight:true,
-    triadShapes:false
+    triadShapes:true,
+    caged:false,
+    scaleRuns:false
   },
   chord:{degreeIndex:0,chordType:"min7"},
   degreeMode:"string",
   degreeArrows:false
 };
-
 function noteIndex(n){
-  return NOTES.indexOf(
-    n.replace("♯","#").replace("♭","b").split(" / ")[0]
-  );
+  return NOTES.indexOf(n);
 }
-function transpose(n,s){
-  return NOTES[(noteIndex(n)+s+120)%12];
+
+function midiFor(note,oct){
+  return 12*(oct+1)+noteIndex(note);
 }
-function buildScale(n,s){
-  const r=noteIndex(n);
-  return s.map(e=>NOTES[(r+e)%12]);
+
+function hzFor(m){
+  return 440*Math.pow(2,(m-69)/12);
 }
-function midiFor(n,s){
-  return 12*(s+1)+noteIndex(n);
+
+function fmtHz(h){
+  return h.toFixed(2);
 }
-function hzFor(n){
-  return 440*Math.pow(2,(n-69)/12);
+
+function fmtCents(c){
+  return (c>=0?"+":"")+c.toFixed(1)+"c";
 }
-function fmtHz(n){
-  return n.toFixed(1);
-}
-function fmtCents(n){
-  return n===0?"0¢":(n>0?"+":"−")+Math.abs(n).toFixed(0)+"¢";
-}
+
 function chromaticLabel(n){
-  return {
-    0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",
-    6:"♯4",7:"5",8:"♭6",9:"6",10:"♭7",11:"7"
-  }[(n+120)%12];
+  const map={
+    0:"1",
+    1:"♭2",
+    2:"2",
+    3:"♭3",
+    4:"3",
+    5:"4",
+    6:"♯4",
+    7:"5",
+    8:"♭6",
+    9:"6",
+    10:"♭7",
+    11:"7"
+  };
+  return map[n]||"?";
 }
-function isMajorFamily(n){
-  return n==="major" ? true : n!=="minor";
+
+function solfegeForDegree(d,maj){
+  const majorSol=["Do","Re","Mi","Fa","So","La","Ti"];
+  const minorSol=["La","Ti","Do","Re","Mi","Fa","So"];
+  return maj?majorSol[d]:minorSol[d];
 }
-function solfegeForDegree(n,major){
-  const M=["Do","Re","Mi","Fa","So","La","Ti"];
-  const m=["La","Ti","Do","Re","Mi","Fa","So"];
-  return major?M[n]:m[n];
+
+function isMajorFamily(t){
+  return t==="major";
 }
-function getFeelLines(sol, major, toggles){
-  const {doFeel, laFeel} = toggles;
+
+function buildScale(root,intervals){
+  const r=noteIndex(root);
+  return intervals.map(i=>NOTES[(r+i)%12]);
+}
+
+function getFeelLines(sol,major,toggles){
+  const {doFeel,laFeel}=toggles;
   if(!doFeel && !laFeel) return [];
-  if(doFeel && !laFeel) return FEEL_DO[sol] || [];
-  if(!doFeel && laFeel) return FEEL_LA[sol] || [];
-  return major ? (FEEL_DO[sol]||[]) : (FEEL_LA[sol]||[]);
+  if(doFeel && !laFeel) return FEEL_DO[sol]||[];
+  if(!doFeel && laFeel) return FEEL_LA[sol]||[];
+  return major?(FEEL_DO[sol]||[]):(FEEL_LA[sol]||[]);
 }
 
 function getScaleMeta(){
   for(const f of SCALE_FAMILIES){
     for(const s of f.scales){
       if(s.id===state.scaleId && f.id===state.familyId){
-        return {family:f, scale:s};
+        return {family:f,scale:s};
       }
     }
   }
@@ -872,19 +988,33 @@ function getScaleMeta(){
 
 function extendedDegreeLabel(n){
   return {
-    0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",6:"♯4",7:"5",
-    8:"♭6",9:"6",10:"♭7",11:"7",12:"8",14:"9",17:"11",21:"13"
-  }[n] || "?";
+    0:"1",
+    1:"♭2",
+    2:"2",
+    3:"♭3",
+    4:"3",
+    5:"4",
+    6:"♯4",
+    7:"5",
+    8:"♭6",
+    9:"6",
+    10:"♭7",
+    11:"7",
+    12:"8",
+    14:"9",
+    17:"11",
+    21:"13"
+  }[n]||"?";
 }
 
 function updateKeyBehaviorExplanation(){
   const m=getScaleMeta();
   if(!m) return;
-  const {scale:s} = m;
+  const {scale:s}=m;
   const r=state.root;
-  document.getElementById("theoryKeyBehavior").textContent =
-    `Being in ${r} ${s.name} means ${r} is the tonic — the home base the whole scale is built around. ` +
-    `Playing another note does not change the key; it simply functions as its scale degree. ` +
+  document.getElementById("theoryKeyBehavior").textContent=
+    `Being in ${r} ${s.name} means ${r} is the tonic — the home base the whole scale is built around. `+
+    `Playing another note does not change the key; it simply functions as its scale degree. `+
     `The tonic is not the lowest note you play — it is the note the system is centered on.`;
 }
 
@@ -906,9 +1036,9 @@ const CHORD_FORMULAS={
   add13:["1","3","5","13"]
 };
 
-function degreeRomanAndQuality(intervals, index, familyType){
+function degreeRomanAndQuality(intervals,index,familyType){
   return {
-    roman: (
+    roman:(
       isMajorFamily(familyType)
         ? ["I","ii","iii","IV","V","vi","vii°"]
         : ["i","ii°","III","iv","v","VI","VII"]
@@ -916,31 +1046,26 @@ function degreeRomanAndQuality(intervals, index, familyType){
   };
 }
 
-function buildHybridChord(root, intervals, degreeIndex, chordType){
-  const formula = CHORD_FORMULAS[chordType] || ["1","3","5"];
-  const scaleNotes = buildScale(root, intervals);
-  const chordRoot = scaleNotes[degreeIndex];
-  const tones = [];
-
+function buildHybridChord(root,intervals,degreeIndex,chordType){
+  const formula=CHORD_FORMULAS[chordType]||["1","3","5"];
+  const scaleNotes=buildScale(root,intervals);
+  const chordRoot=scaleNotes[degreeIndex];
+  const tones=[];
   for(const f of formula){
-    let offset = 0;
-    if(f.includes("♭")) offset -= 1;
-    if(f.includes("♯")) offset += 1;
-
-    const base = parseInt(f.replace("♭","").replace("♯",""));
-    const diatonicIndex = (base - 1) % 7;
-    const octaveOffset = 12 * Math.floor((base - 1) / 7);
-
-    if(diatonicIndex < intervals.length){
-      offset += intervals[diatonicIndex] + octaveOffset;
+    let offset=0;
+    if(f.includes("♭")) offset-=1;
+    if(f.includes("♯")) offset+=1;
+    const base=parseInt(f.replace("♭","").replace("♯",""));
+    const diatonicIndex=(base-1)%7;
+    const octaveOffset=12*Math.floor((base-1)/7);
+    if(diatonicIndex<intervals.length){
+      offset+=intervals[diatonicIndex]+octaveOffset;
     } else {
-      offset += octaveOffset;
+      offset+=octaveOffset;
     }
-
-    const note = NOTES[(noteIndex(chordRoot) + offset + 120) % 12];
-    tones.push({label:f, note});
+    const note=NOTES[(noteIndex(chordRoot)+offset+120)%12];
+    tones.push({label:f,note});
   }
-
   return tones;
 }
 
@@ -948,36 +1073,30 @@ function clearAllNoteBubbles(){
   document.querySelectorAll(".note-info-bubble").forEach(b=>b.remove());
 }
 
-function showNoteInfoBubble(cell, title, text){
-  const existing = cell.querySelector(".note-info-bubble");
-  if(existing){ existing.remove(); return; }
+function showNoteInfoBubble(cell,title,text){
+  const existing=cell.querySelector(".note-info-bubble");
+  if(existing){existing.remove();return;}
   clearAllNoteBubbles();
-
   const box=document.createElement("div");
   box.className="note-info-bubble";
-
   const t=document.createElement("div");
   t.className="note-info-title";
   t.textContent=title;
-
   const p=document.createElement("div");
   p.className="note-info-text";
   p.textContent=text;
-
   box.appendChild(t);
   box.appendChild(p);
   cell.appendChild(box);
 }
 
-function getDotExplanation(type, info){
-  const {noteName, sol, degree, familyLabel, scaleName, isMajor} = info;
-
+function getDotExplanation(type,info){
+  const {noteName,sol,degree,familyLabel,scaleName,isMajor}=info;
   if(type==="tonal"){
     return degree===0
       ? {title:"Tonal Root",text:`${noteName} is the home base of this scale.`}
       : {title:"Tonal Anchor",text:`${noteName} is measured from the root.`};
   }
-
   if(type==="mode"){
     const ord=["1st","2nd","3rd","4th","5th","6th","7th"];
     return {
@@ -985,24 +1104,37 @@ function getDotExplanation(type, info){
       text:`${noteName} is the ${ord[degree]} degree of ${scaleName}.`
     };
   }
-
   if(type==="family"){
     return {
       title:"Family Dot",
       text:`${scaleName} belongs to the ${familyLabel} family.`
     };
   }
-
   if(type==="solfege"){
-    const feel = isMajor ? FEEL_DO[sol] : FEEL_LA[sol];
+    const feel=isMajor?FEEL_DO[sol]:FEEL_LA[sol];
     return {
       title:`Solfege: ${sol}`,
-      text: feel?.[0]?.text || `${sol} describes this note’s role.`
+      text:feel?.[0]?.text||`${sol} describes this note’s role.`
     };
   }
-
   return {title:"Note Info",text:`${noteName} inside this scale.`};
 }
+// CAGED zone map
+const CAGED_ZONES=[
+  {name:"C",start:0,end:4},
+  {name:"A",start:3,end:7},
+  {name:"G",start:5,end:9},
+  {name:"E",start:7,end:11},
+  {name:"D",start:10,end:14}
+];
+
+function cagedShapeForFret(fret){
+  for(const z of CAGED_ZONES){
+    if(fret>=z.start && fret<=z.end) return z.name;
+  }
+  return null;
+}
+
 function initDegreeModeToggles(){
   document.querySelectorAll("[data-degmode]").forEach(btn=>{
     const mode=btn.dataset.degmode;
@@ -1282,20 +1414,29 @@ function buildFretboard(){
           state.chord.degreeIndex,
           state.chord.chordType
         );
+
         const r=triad[0]?.note;
         const t=triad[1]?.note;
         const f5=triad[2]?.note;
 
-        if(note===r) cell.classList.add("triad-root");
-        else if(note===t) cell.classList.add("triad-third");
-        else if(note===f5) cell.classList.add("triad-fifth");
+        let diamondClass=null;
+        if(note===r) diamondClass="triad-root-diamond";
+        else if(note===t) diamondClass="triad-third-diamond";
+        else if(note===f5) diamondClass="triad-fifth-diamond";
+
+        if(diamondClass){
+          const d=document.createElement("div");
+          d.className=`triad-diamond ${diamondClass}`;
+          cell.appendChild(d);
+        }
       }
 
       if(state.toggles.names){
-        const n=document.createElement("div");
-        n.className="note-name";
-        n.textContent=note;
-        cell.appendChild(n);
+        const combined=document.createElement("div");
+        combined.className="note-name";
+        const octave=Math.floor(midi/12)-1;
+        combined.textContent=`${note}${octave}`;
+        cell.appendChild(combined);
       }
 
       if(state.toggles.names && inScale){
@@ -1360,23 +1501,28 @@ function buildFretboard(){
         cell.appendChild(b);
       }
 
+      if(state.toggles.caged && inScale && degree===0){
+        const shape=cagedShapeForFret(fret);
+        if(shape) cell.classList.add(`caged-${shape}`);
+      }
+
+      if(state.toggles.scaleRuns && inScale){
+        cell.classList.add("scale-run-node");
+      }
+
       row.appendChild(cell);
     }
 
     fb.appendChild(row);
   }
 }
-
 function updateStepsPanel(steps){
-  const p=document.getElementById("stepsPanel");
-  if(state.toggles.steps){
-    p.style.display="block";
-    document.getElementById("stepsTitle").textContent="Scale Steps";
-    document.getElementById("stepsPattern").textContent=steps.join(" – ");
-  } else {
-    p.style.display="none";
-  }
+  const title=document.getElementById("stepsTitle");
+  const pattern=document.getElementById("stepsPattern");
+  title.textContent="Step Pattern";
+  pattern.textContent=steps.join(" – ");
 }
+
 function initSelectors(){
   const r=document.getElementById("rootSelect");
   NOTES.forEach(n=>{
