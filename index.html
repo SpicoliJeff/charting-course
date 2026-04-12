@@ -4,20 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Functional Fretboard</title>
-
 <style>
-
-/* -----------------------------------------------------------
-   ROOT COLORS
------------------------------------------------------------ */
-
 :root {
   --bg: #020617;
   --bg-panel: #0a0f1f;
   --border: #1e293b;
   --text: #e5e7eb;
   --text-muted: #94a3b8;
-
   --root: #fb923c;
   --scale: #22c55e;
   --triad: #f9fafb;
@@ -27,15 +20,9 @@
   --outside: #a78bfa;
   --story: #60a5fa;
   --stable: #22c55e;
-
   --accent: #38bdf8;
   --accent-soft: rgba(56,189,248,0.15);
 }
-
-/* -----------------------------------------------------------
-   GLOBAL
------------------------------------------------------------ */
-
 body {
   margin: 0;
   padding: 0;
@@ -43,29 +30,21 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-
 .app {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
 }
-
 .title {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
 }
-
 .subtitle {
   margin-top: 4px;
   font-size: 12px;
   color: var(--text-muted);
 }
-
-/* -----------------------------------------------------------
-   CONTROL PANEL
------------------------------------------------------------ */
-
 .control-panel {
   margin-top: 20px;
   padding: 16px;
@@ -73,21 +52,18 @@ body {
   border: 1px solid var(--border);
   border-radius: 10px;
 }
-
 .row {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
-
 .label {
   font-size: 11px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-
 .select {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -96,18 +72,12 @@ body {
   border-radius: 6px;
   font-size: 12px;
 }
-
-/* -----------------------------------------------------------
-   TOGGLES
------------------------------------------------------------ */
-
 .toggle-row {
   margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .toggle {
   display: flex;
   align-items: center;
@@ -120,44 +90,30 @@ body {
   color: var(--text-muted);
   cursor: pointer;
 }
-
 .toggle.active {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-soft);
 }
-
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
   background: var(--border);
 }
-
 .toggle.active .dot {
   background: var(--accent);
 }
-
 #degreeModeRow .toggle {
   min-width: 90px;
   justify-content: center;
 }
-
-/* -----------------------------------------------------------
-   MAIN AREA
------------------------------------------------------------ */
-
 .main-area {
   margin-top: 20px;
   display: flex;
   gap: 20px;
   height: calc(100vh - 220px);
 }
-
-/* -----------------------------------------------------------
-   FRETBOARD PANEL
------------------------------------------------------------ */
-
 .fretboard-panel {
   flex: 1;
   display: flex;
@@ -169,11 +125,6 @@ body {
   overflow: hidden;
   position: relative;
 }
-
-/* -----------------------------------------------------------
-   STEPS PANEL
------------------------------------------------------------ */
-
 .steps-panel {
   position: absolute;
   top: 12px;
@@ -186,22 +137,15 @@ body {
   pointer-events: none;
   z-index: 5;
 }
-
 .steps-title {
   color: var(--accent);
   font-size: 11px;
   margin-bottom: 2px;
 }
-
 .steps-pattern {
   font-family: ui-monospace, monospace;
   font-size: 11px;
 }
-
-/* -----------------------------------------------------------
-   FRETBOARD GRID
------------------------------------------------------------ */
-
 .fretboard {
   flex: 1;
   overflow-y: auto;
@@ -211,14 +155,12 @@ body {
   gap: 4px;
   height: 100%;
 }
-
 .fret-row {
   display: grid;
   grid-template-columns: 30px repeat(6, 80px);
   gap: 4px;
   align-items: stretch;
 }
-
 .fret-number {
   font-size: 11px;
   color: var(--text-muted);
@@ -227,11 +169,6 @@ body {
   display: flex;
   align-items: center;
 }
-
-/* -----------------------------------------------------------
-   NOTE CELL
------------------------------------------------------------ */
-
 .note-cell {
   position: relative;
   background: var(--bg);
@@ -244,20 +181,13 @@ body {
   align-items: center;
   overflow: hidden;
 }
-
 .note-cell.chord-note {
   box-shadow: 0 0 0 2px rgba(249,250,251,0.4);
   border-color: var(--triad);
 }
-
 .note-cell.interval-highlight {
   background: radial-gradient(circle at center, rgba(56,189,248,0.18), var(--bg));
 }
-
-/* -----------------------------------------------------------
-   DOTS
------------------------------------------------------------ */
-
 .dot-root,
 .dot-scale,
 .dot-family {
@@ -269,28 +199,20 @@ body {
   cursor: pointer;
   z-index: 2;
 }
-
 .dot-root { left: 4px; background: var(--root); }
 .dot-scale { left: 14px; background: var(--scale); }
 .dot-family { left: 24px; background: var(--accent); }
-
-/* -----------------------------------------------------------
-   NOTE LABELS
------------------------------------------------------------ */
-
 .note-name {
   margin-top: 6px;
   font-size: 15px;
   font-weight: 700;
 }
-
 .note-interval {
   margin-top: 1px;
   font-size: 11px;
   color: var(--text-muted);
   font-family: ui-monospace, monospace;
 }
-
 .note-solfege {
   margin-top: 2px;
   font-size: 12px;
@@ -299,29 +221,18 @@ body {
   position: relative;
   z-index: 2;
 }
-
-/* -----------------------------------------------------------
-   FEEL LINES
------------------------------------------------------------ */
-
 .note-feel-line {
   margin-top: 1px;
   font-size: 10px;
   text-align: center;
   line-height: 1.2;
 }
-
 .feel-stable { color: var(--stable); }
 .feel-forward { color: var(--accent); }
 .feel-dominant { color: var(--dominant); }
 .feel-leading { color: var(--leading); }
 .feel-outside { color: var(--outside); }
 .feel-story { color: var(--story); }
-
-/* -----------------------------------------------------------
-   BOTTOM LABELS
------------------------------------------------------------ */
-
 .note-bottom {
   margin-top: auto;
   font-size: 10px;
@@ -329,11 +240,6 @@ body {
   text-align: center;
   font-family: ui-monospace, monospace;
 }
-
-/* -----------------------------------------------------------
-   THEORY PANEL
------------------------------------------------------------ */
-
 .theory-panel {
   margin-top: 10px;
   padding: 12px;
@@ -342,24 +248,17 @@ body {
   border-radius: 10px;
   flex-shrink: 0;
 }
-
 .theory-title {
   font-size: 11px;
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 6px;
 }
-
 .theory-line {
   font-size: 11px;
   color: var(--text-muted);
   margin-bottom: 2px;
 }
-
-/* -----------------------------------------------------------
-   SIDE PANEL
------------------------------------------------------------ */
-
 .side-panel {
   width: 320px;
   background: var(--bg-panel);
@@ -369,13 +268,11 @@ body {
   display: flex;
   flex-direction: column;
 }
-
 .tabs {
   display: flex;
   gap: 6px;
   margin-bottom: 10px;
 }
-
 .tab {
   padding: 4px 10px;
   border-radius: 999px;
@@ -384,17 +281,11 @@ body {
   color: var(--text-muted);
   cursor: pointer;
 }
-
 .tab.active {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-soft);
 }
-
-/* -----------------------------------------------------------
-   DEGREE LABELS
------------------------------------------------------------ */
-
 .scale-degree-label {
   position: absolute;
   left: 4px;
@@ -408,10 +299,7 @@ body {
   white-space: nowrap;
 }
 
-/* -----------------------------------------------------------
-   SCALE OUTLINE COLORS
------------------------------------------------------------ */
-
+/* SCALE OUTLINE COLORS */
 .scale-outline-1 { outline: 2px solid #ffb86c; border-radius: 8px; }
 .scale-outline-b2 { outline: 2px solid #d00000; border-radius: 8px; }
 .scale-outline-2 { outline: 2px solid #8be9fd; border-radius: 8px; }
@@ -428,62 +316,63 @@ body {
 .scale-outline-11 { outline: 2px solid #a78bfa; border-radius: 8px; }
 .scale-outline-13 { outline: 2px solid #ffb3c6; border-radius: 8px; }
 
-/* -----------------------------------------------------------
-   SIDE PANEL CONTENT
------------------------------------------------------------ */
+/* TRIAD SHAPE OUTLINES */
+.triad-root {
+  outline: 3px solid #ffb86c;
+  border-radius: 4px;
+  transform: rotate(45deg);
+}
+.triad-third {
+  outline: 2px solid #ff79c6;
+  border-radius: 4px;
+  transform: rotate(45deg);
+}
+.triad-fifth {
+  outline: 2px solid #8be9fd;
+  border-radius: 4px;
+  transform: rotate(45deg);
+}
 
 .side-section {
   margin-bottom: 12px;
 }
-
 .side-title {
   font-size: 11px;
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 4px;
 }
-
 .side-text {
   font-size: 11px;
   color: var(--text-muted);
 }
-
 .side-mono {
   font-size: 11px;
   color: var(--text-muted);
   font-family: ui-monospace, monospace;
 }
-
-/* -----------------------------------------------------------
-   PRONOUNCE TAB
------------------------------------------------------------ */
-
 .pronounce-box {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg);
 }
-
 .pronounce-title {
   font-size: 11px;
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 4px;
 }
-
 .pronounce-text {
   font-size: 11px;
   color: var(--text-muted);
   margin-bottom: 6px;
 }
-
 .chip-row {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
-
 .chip {
   font-size: 10px;
   padding: 2px 8px;
@@ -491,21 +380,14 @@ body {
   border: 1px solid var(--border);
   color: var(--text-muted);
 }
-
 .chip.strong {
   border-color: var(--accent);
   color: var(--accent);
 }
-
-/* -----------------------------------------------------------
-   CHORD BUILDER
------------------------------------------------------------ */
-
 .chords-layout {
   display: flex;
   gap: 8px;
 }
-
 .degree-list {
   flex: 1;
   max-height: 260px;
@@ -513,7 +395,6 @@ body {
   border-right: 1px solid var(--border);
   padding-right: 6px;
 }
-
 .degree-item {
   padding: 4px 6px;
   border-radius: 6px;
@@ -523,24 +404,20 @@ body {
   cursor: pointer;
   margin-bottom: 4px;
 }
-
 .degree-item.active {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent);
 }
-
 .degree-main {
   display: flex;
   justify-content: space-between;
   font-family: ui-monospace, monospace;
 }
-
 .degree-sub {
   font-size: 10px;
   color: var(--text-muted);
 }
-
 .chord-detail {
   flex: 1;
   font-size: 11px;
@@ -549,25 +426,20 @@ body {
   flex-direction: column;
   gap: 4px;
 }
-
 .chord-type-select {
   margin-bottom: 6px;
 }
-
 .chord-detail-row {
   display: flex;
   gap: 4px;
 }
-
 .chord-detail-label {
   font-weight: 600;
   color: var(--text);
 }
-
 .chord-tones {
   font-family: ui-monospace, monospace;
 }
-
 .chord-logic-block {
   margin-top: 6px;
   padding: 6px;
@@ -575,23 +447,16 @@ body {
   border: 1px solid var(--border);
   background: var(--bg);
 }
-
 .chord-logic-title {
   font-size: 11px;
   color: var(--accent);
   margin-bottom: 4px;
 }
-
 .chord-logic-line {
   font-size: 10px;
   color: var(--text-muted);
   margin-bottom: 2px;
 }
-
-/* -----------------------------------------------------------
-   NOTE INFO BUBBLE
------------------------------------------------------------ */
-
 .note-info-bubble {
   position: absolute;
   right: 4px;
@@ -603,324 +468,680 @@ body {
   border: 1px solid var(--border);
   padding: 6px;
 }
-
 .note-info-title {
   font-size: 11px;
   color: var(--accent);
   margin-bottom: 2px;
 }
-
 .note-info-text {
   font-size: 10px;
   color: var(--text-muted);
   line-height: 1.3;
 }
-
 </style>
 </head>
 <body>
-
 <div id="app" class="app">
+<header class="header">
+  <h1 class="title">Functional Fretboard</h1>
+  <div class="subtitle">Vertical 24‑fret hybrid prosody scale & chord explorer</div>
+</header>
+<section class="control-panel">
 
-  <header class="header">
-    <h1 class="title">Functional Fretboard</h1>
-    <div class="subtitle">Vertical 24‑fret hybrid prosody scale & chord explorer</div>
-  </header>
-
-  <section class="control-panel">
-
-    <div class="row row-main-selects">
-      <div class="control-block">
-        <label class="label">Root</label>
-        <select id="rootSelect" class="select"></select>
-      </div>
-
-      <div class="control-block">
-        <label class="label">Scale</label>
-        <select id="scaleSelect" class="select"></select>
-      </div>
+  <div class="row row-main-selects">
+    <div class="control-block">
+      <label class="label">Root</label>
+      <select id="rootSelect" class="select"></select>
     </div>
 
-    <div class="row toggle-row" id="toggleRow1">
-      <span class="label">Display</span>
-      <div class="toggle" data-toggle="names"><div class="dot"></div>Names</div>
-      <div class="toggle" data-toggle="octaves"><div class="dot"></div>Oct</div>
-      <div class="toggle" data-toggle="hz"><div class="dot"></div>Hz</div>
-      <div class="toggle" data-toggle="absCents"><div class="dot"></div>Abs¢</div>
-      <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int¢</div>
+    <div class="control-block">
+      <label class="label">Scale</label>
+      <select id="scaleSelect" class="select"></select>
+    </div>
+  </div>
+
+  <div class="row toggle-row" id="toggleRow1">
+    <span class="label">Display</span>
+    <div class="toggle" data-toggle="names"><div class="dot"></div>Names</div>
+    <div class="toggle" data-toggle="octaves"><div class="dot"></div>Oct</div>
+    <div class="toggle" data-toggle="hz"><div class="dot"></div>Hz</div>
+    <div class="toggle" data-toggle="absCents"><div class="dot"></div>Abs¢</div>
+    <div class="toggle" data-toggle="intCents"><div class="dot"></div>Int¢</div>
+  </div>
+
+  <div class="row toggle-row" id="toggleRow2">
+    <span class="label">Prosody</span>
+    <div class="toggle" data-toggle="steps"><div class="dot"></div>Steps</div>
+    <div class="toggle" data-toggle="doFeel"><div class="dot"></div>Do Feel</div>
+    <div class="toggle" data-toggle="laFeel"><div class="dot"></div>La Feel</div>
+    <div class="toggle" data-toggle="tonalDot"><div class="dot"></div>TonalDot</div>
+    <div class="toggle" data-toggle="modeDot"><div class="dot"></div>ModeDot</div>
+    <div class="toggle" data-toggle="familyDot"><div class="dot"></div>FamilyDot</div>
+    <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
+    <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
+    <div class="toggle" data-toggle="triadShapes"><div class="dot"></div>Triad Shapes</div>
+  </div>
+
+  <div class="row toggle-row" id="degreeModeRow">
+    <span class="label">Degree Mode</span>
+    <div class="toggle" data-degmode="string"><div class="dot"></div>Per String</div>
+    <div class="toggle" data-degmode="octave"><div class="dot"></div>Per Octave</div>
+    <div class="toggle" data-degmode="arrows"><div class="dot"></div>Arrows</div>
+  </div>
+
+</section>
+
+<section class="main-area">
+
+  <div class="fretboard-panel">
+
+    <div id="stepsPanel" class="steps-panel" style="display:none;">
+      <div id="stepsTitle" class="steps-title"></div>
+      <div id="stepsPattern" class="steps-pattern"></div>
     </div>
 
-    <div class="row toggle-row" id="toggleRow2">
-      <span class="label">Prosody</span>
-      <div class="toggle" data-toggle="steps"><div class="dot"></div>Steps</div>
-      <div class="toggle" data-toggle="doFeel"><div class="dot"></div>Do Feel</div>
-      <div class="toggle" data-toggle="laFeel"><div class="dot"></div>La Feel</div>
-      <div class="toggle" data-toggle="tonalDot"><div class="dot"></div>TonalDot</div>
-      <div class="toggle" data-toggle="modeDot"><div class="dot"></div>ModeDot</div>
-      <div class="toggle" data-toggle="familyDot"><div class="dot"></div>FamilyDot</div>
-      <div class="toggle" data-toggle="chordOverlay"><div class="dot"></div>Chord</div>
-      <div class="toggle" data-toggle="intervalHighlight"><div class="dot"></div>Intervals</div>
-      <div class="toggle" data-toggle="triadShapes"><div class="dot"></div>Triad Shapes</div>
+    <div id="fretboard" class="fretboard"></div>
+
+    <section class="theory-panel">
+      <div class="theory-title">Scale Theory</div>
+      <div id="theoryName" class="theory-line"></div>
+      <div id="theoryFamily" class="theory-line"></div>
+      <div id="theoryIntervals" class="theory-line"></div>
+      <div id="theorySteps" class="theory-line"></div>
+      <div id="theoryFeel" class="theory-line"></div>
+
+      <div class="theory-title" style="margin-top:10px;">Key Behavior</div>
+      <div id="theoryKeyBehavior" class="theory-line"></div>
+    </section>
+
+  </div>
+
+  <aside class="side-panel">
+
+    <div class="tabs">
+      <div class="tab active" data-tab="scales">Scales</div>
+      <div class="tab" data-tab="pronounce">Pronounce</div>
+      <div class="tab" data-tab="chords">Chords</div>
     </div>
 
-    <div class="row toggle-row" id="degreeModeRow">
-      <span class="label">Degree Mode</span>
-      <div class="toggle" data-degmode="string"><div class="dot"></div>Per String</div>
-      <div class="toggle" data-degmode="octave"><div class="dot"></div>Per Octave</div>
-      <div class="toggle" data-degmode="arrows"><div class="dot"></div>Arrows</div>
-    </div>
+    <div id="tabScales" class="tab-content">
 
-  </section>
-
-  <section class="main-area">
-
-    <div class="fretboard-panel">
-
-      <div id="stepsPanel" class="steps-panel" style="display:none;">
-        <div id="stepsTitle" class="steps-title"></div>
-        <div id="stepsPattern" class="steps-pattern"></div>
-      </div>
-
-      <div id="fretboard" class="fretboard"></div>
-
-      <section class="theory-panel">
-        <div class="theory-title">Scale Theory</div>
-        <div id="theoryName" class="theory-line"></div>
-        <div id="theoryFamily" class="theory-line"></div>
-        <div id="theoryIntervals" class="theory-line"></div>
-        <div id="theorySteps" class="theory-line"></div>
-        <div id="theoryFeel" class="theory-line"></div>
-
-        <div class="theory-title" style="margin-top:10px;">Key Behavior</div>
-        <div id="theoryKeyBehavior" class="theory-line"></div>
-      </section>
-
-    </div>
-
-    <aside class="side-panel">
-
-      <div class="tabs">
-        <div class="tab active" data-tab="scales">Scales</div>
-        <div class="tab" data-tab="pronounce">Pronounce</div>
-        <div class="tab" data-tab="chords">Chords</div>
-      </div>
-
-      <div id="tabScales" class="tab-content">
-
-        <div class="side-section">
-          <div class="side-title">Scale Families</div>
-          <div class="side-text">
-            Grouped by function: major, minor, dominant, symmetric, pentatonic, Japanese, exotic.
-          </div>
+      <div class="side-section">
+        <div class="side-title">Scale Families</div>
+        <div class="side-text">
+          Grouped by function: major, minor, dominant, symmetric, pentatonic, Japanese, exotic.
         </div>
-
-        <div class="side-section">
-          <div class="side-title">Current Selection</div>
-          <div id="sideCurrent" class="side-mono"></div>
-          <div id="sideIntervals" class="side-mono"></div>
-          <div id="sideSteps" class="side-mono"></div>
-        </div>
-
       </div>
 
-      <div id="tabPronounce" class="tab-content" style="display:none;">
-
-        <div class="pronounce-box">
-          <div class="pronounce-title">Pronunciation Engine</div>
-          <div id="pronounceLine" class="pronounce-text">
-            Double‑click a note (future hook) to see vowel, register, and resonance coaching.
-          </div>
-
-          <div class="chip-row">
-            <div class="chip strong">Movable‑Do</div>
-            <div class="chip strong">Movable‑La</div>
-            <div class="chip">Bright vs dark vowels</div>
-            <div class="chip">Register hints</div>
-          </div>
-        </div>
-
+      <div class="side-section">
+        <div class="side-title">Current Selection</div>
+        <div id="sideCurrent" class="side-mono"></div>
+        <div id="sideIntervals" class="side-mono"></div>
+        <div id="sideSteps" class="side-mono"></div>
       </div>
 
-      <div id="tabChords" class="tab-content" style="display:none;">
+    </div>
+<div id="tabPronounce" class="tab-content" style="display:none;">
 
-        <div class="side-section">
-          <div class="side-title">Chord Builder</div>
+  <div class="pronounce-box">
+    <div class="pronounce-title">Pronunciation Engine</div>
+    <div id="pronounceLine" class="pronounce-text">
+      Double‑click a note (future hook) to see vowel, register, and resonance coaching.
+    </div>
 
-          <div class="chords-layout">
-
-            <div class="degree-list" id="degreeList"></div>
-
-            <div class="chord-detail">
-
-              <div class="chord-type-select">
-                <label class="label">Chord Type</label>
-                <select id="chordTypeSelect" class="select">
-                  <option value="maj">maj</option>
-                  <option value="min">min</option>
-                  <option value="dim">dim</option>
-                  <option value="aug">aug</option>
-                  <option value="sus2">sus2</option>
-                  <option value="sus4">sus4</option>
-                  <option value="power">5 (power)</option>
-                  <option value="maj7">maj7</option>
-                  <option value="min7">min7</option>
-                  <option value="dom7">dom7</option>
-                  <option value="halfdim7">half‑dim7</option>
-                  <option value="dim7">dim7</option>
-                  <option value="add9">add9</option>
-                  <option value="add11">add11</option>
-                  <option value="add13">add13</option>
-                </select>
-              </div>
-
-              <div class="chord-detail-row">
-                <span class="chord-detail-label">Chord Name:</span>
-                <span id="chordName"></span>
-              </div>
-
-              <div class="chord-detail-row">
-                <span class="chord-detail-label">Formula:</span>
-                <span id="chordFormula"></span>
-              </div>
-
-              <div class="chord-detail-row">
-                <span class="chord-detail-label">Chord Tones:</span>
-                <span id="chordTones" class="chord-tones"></span>
-              </div>
-
-              <div class="chord-logic-block">
-                <div class="chord-logic-title">Hybrid Chord Logic</div>
-                <div class="chord-logic-line"><strong>Diatonic Base:</strong> Chords begin on the selected scale degree, using the scale’s notes as the foundation.</div>
-                <div class="chord-logic-line"><strong>Chromatic Extensions:</strong> If the chord type requires tones outside the scale (maj7, dom7, aug, dim7, add9, etc.), those tones are added chromatically.</div>
-                <div class="chord-logic-line"><strong>Alteration Handling:</strong> Chromatic tones are labeled with interval notation (♭2, ♯4, ♭6, etc.) and highlighted as altered tones.</div>
-                <div class="chord-logic-line"><strong>Functional Behavior:</strong> Triads and sevenths follow diatonic function; extended and altered chords follow chromatic function.</div>
-                <div class="chord-logic-line"><strong>Prosody Integration:</strong> Chord tones still receive solfege + feel lines based on the underlying scale, even when chromatic tones appear.</div>
-                <div class="chord-logic-line"><strong>Interval Labels:</strong> Every note shows its interval from the scale root: scale tones as diatonic degrees, chromatic tones as chromatic labels.</div>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </aside>
-
-  </section>
+    <div class="chip-row">
+      <div class="chip strong">Movable‑Do</div>
+      <div class="chip strong">Movable‑La</div>
+      <div class="chip">Bright vs dark vowels</div>
+      <div class="chip">Register hints</div>
+    </div>
+  </div>
 
 </div>
-const NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],STRINGS=["E","B","G","D","A","E"],TOTAL_FRETS=25,SCALE_FAMILIES=[{id:"major_modes",label:"Major Modes",familyType:"major",scales:[{id:"ionian",name:"Ionian (Major)",intervals:[0,2,4,5,7,9,11],steps:["W","W","H","W","W","W","H"]},{id:"lydian",name:"Lydian",intervals:[0,2,4,6,7,9,11],steps:["W","W","W","H","W","W","H"]},{id:"mixolydian",name:"Mixolydian",intervals:[0,2,4,5,7,9,10],steps:["W","W","H","W","W","H","W"]}]},{id:"minor_modes",label:"Minor Modes",familyType:"minor",scales:[{id:"aeolian",name:"Aeolian (Natural Minor)",intervals:[0,2,3,5,7,8,10],steps:["W","H","W","W","H","W","W"]},{id:"dorian",name:"Dorian",intervals:[0,2,3,5,7,9,10],steps:["W","H","W","W","W","H","W"]},{id:"phrygian",name:"Phrygian",intervals:[0,1,3,5,7,8,10],steps:["H","W","W","W","H","W","W"]},{id:"locrian",name:"Locrian",intervals:[0,1,3,5,6,8,10],steps:["H","W","W","H","W","W","W"]}]},{id:"harmonic_minor",label:"Harmonic Minor",familyType:"minor",scales:[{id:"harmonic_minor",name:"Harmonic Minor",intervals:[0,2,3,5,7,8,11],steps:["W","H","W","W","H","W+H","H"]}]},{id:"melodic_minor",label:"Melodic Minor",familyType:"minor",scales:[{id:"melodic_minor",name:"Melodic Minor (Jazz)",intervals:[0,2,3,5,7,9,11],steps:["W","H","W","W","W","W","H"]}]},{id:"dominant_altered",label:"Dominant / Altered",familyType:"minor",scales:[{id:"mixolydian_b9_b13",name:"Mixolydian ♭9 ♭13",intervals:[0,1,3,4,7,8,10],steps:["H","W","H","W+H","H","W+H","H"]},{id:"altered",name:"Altered (Super Locrian)",intervals:[0,1,3,4,6,8,10],steps:["H","W","H","W","W","W","W"]}]},{id:"symmetric",label:"Symmetric / Diminished",familyType:"neutral",scales:[{id:"whole_tone",name:"Whole Tone",intervals:[0,2,4,6,8,10],steps:["W","W","W","W","W","W"]},{id:"dim_hw",name:"Diminished (H–W)",intervals:[0,1,3,4,6,7,9,10],steps:["H","W","H","W","H","W","H","W"]},{id:"dim_wh",name:"Diminished (W–H)",intervals:[0,2,3,5,6,8,9,11],steps:["W","H","W","H","W","H","W","H"]}]},{id:"pentatonics",label:"Pentatonics",familyType:"mixed",scales:[{id:"major_pent",name:"Major Pentatonic",intervals:[0,2,4,7,9],steps:["W","W","W+H","W","W+H"]},{id:"minor_pent",name:"Minor Pentatonic",intervals:[0,3,5,7,10],steps:["W+H","W","W","W+H","W"]}]},{id:"japanese",label:"Japanese / Traditional",familyType:"minor",scales:[{id:"hirajoshi",name:"Hirajoshi",intervals:[0,2,3,7,8],steps:["W+H","H","W+H","H","W+H"]},{id:"in_sen",name:"In Sen",intervals:[0,1,5,7,10],steps:["H","W+H","W","W+H","W"]}]},{id:"exotic",label:"Exotic / Other",familyType:"minor",scales:[{id:"phrygian_dom",name:"Phrygian Dominant",intervals:[0,1,4,5,7,8,10],steps:["H","W+H","H","W","H","W","W"]}]}];
-const FEEL_DO={Do:[{text:"the home tonic – most stable note",class:"feel-stable"},{text:"everything is resolved here",class:"feel-stable"},{text:"rest, peace",class:"feel-stable"}],Re:[{text:"supertonic – wants to move somewhere",class:"feel-forward"},{text:"a little tension",class:"feel-forward"},{text:"leans upward or downward",class:"feel-forward"}],Mi:[{text:"mediant – the sweet third",class:"feel-story"},{text:"neutral in major and minor",class:"feel-story"},{text:"gentle pull toward Fa or Re",class:"feel-story"}],Fa:[{text:"subdominant – big forward energy",class:"feel-forward"},{text:'"here we go…" feeling',class:"feel-forward"},{text:"leans strongly toward So",class:"feel-forward"}],So:[{text:"dominant – strongest pull to Do",class:"feel-dominant"},{text:"maximum tension, strong resolution",class:"feel-dominant"},{text:"wants to resolve downward",class:"feel-dominant"}],La:[{text:"submediant – relative minor feel",class:"feel-story"},{text:"dreamy, storytelling",class:"feel-story"},{text:"floats between So and Ti",class:"feel-story"}],Ti:[{text:"leading tone – pulls upward to Do",class:"feel-leading"},{text:"bright, urgent tension",class:"feel-leading"},{text:"wants to resolve immediately",class:"feel-leading"}]};
-const FEEL_LA={La:[{text:"minor tonic – where the story lives",class:"feel-story"},{text:"restful, serious, final",class:"feel-story"},{text:"resting point",class:"feel-stable"}],Ti:[{text:"leading tone – tension, longing",class:"feel-leading"},{text:"wants to resolve up to La",class:"feel-leading"},{text:"sweet/bitter color",class:"feel-leading"}],Do:[{text:"the 3rd – sad color",class:"feel-story"},{text:"emotional weight",class:"feel-story"},{text:"leans down to Ti or up to Re",class:"feel-story"}],Re:[{text:"dominant (5th) – strong, solid",class:"feel-dominant"},{text:"backbone of minor riffs",class:"feel-dominant"},{text:"pulls toward La",class:"feel-dominant"}],Mi:[{text:"dark, mysterious",class:"feel-outside"},{text:"a little unstable",class:"feel-outside"},{text:"dramatic moves",class:"feel-outside"}],Fa:[{text:"slightly outside, bluesy",class:"feel-outside"},{text:"Spanish / phrygian‑tinged",class:"feel-outside"},{text:"slides downward or sideways",class:"feel-outside"}],So:[{text:"octave of La – full resolution",class:"feel-stable"},{text:"everything feels complete",class:"feel-stable"},{text:"rest, peace",class:"feel-stable"}]};
-const state={root:"A",familyId:"minor_modes",scaleId:"aeolian",toggles:{names:!0,octaves:!0,hz:!0,absCents:!0,intCents:!0,steps:!0,doFeel:!1,laFeel:!0,tonalDot:!0,modeDot:!0,familyDot:!0,chordOverlay:!0,intervalHighlight:!0,triadShapes:!1},chord:{degreeIndex:0,chordType:"min7"},degreeMode:"string",degreeArrows:!1};
 
-function noteIndex(n){return NOTES.indexOf(n.replace("♯","#").replace("♭","b").split(" / ")[0])}
-function transpose(n,s){return NOTES[(noteIndex(n)+s+120)%12]}
-function buildScale(n,s){const r=noteIndex(n);return s.map(e=>NOTES[(r+e)%12])}
-function midiFor(n,s){return 12*(s+1)+noteIndex(n)}
-function hzFor(n){return 440*Math.pow(2,(n-69)/12)}
-function fmtHz(n){return n.toFixed(1)}
-function fmtCents(n){return 0===n?"0¢":(n>0?"+":"−")+Math.abs(n).toFixed(0)+"¢"}
-function chromaticLabel(n){return{0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",6:"♯4",7:"5",8:"♭6",9:"6",10:"♭7",11:"7"}[(n+120)%12]}
-function isMajorFamily(n){return"major"===n?!0:"minor"!==n}
-function solfegeForDegree(n,s){const M=["Do","Re","Mi","Fa","So","La","Ti"],m=["La","Ti","Do","Re","Mi","Fa","So"];return s?M[n]:m[n]}
-function getFeelLines(n,s,t){const{doFeel:o,laFeel:e}=t;if(!o&&!e)return[];if(o&&!e)return FEEL_DO[n]||[];if(!o&&e)return FEEL_LA[n]||[];return s?FEEL_DO[n]||[]:FEEL_LA[n]||[]}
+<div id="tabChords" class="tab-content" style="display:none;">
 
-function getScaleMeta(){for(const f of SCALE_FAMILIES)for(const s of f.scales)if(s.id===state.scaleId&&f.id===state.familyId)return{family:f,scale:s};return null}
+  <div class="side-section">
+    <div class="side-title">Chord Builder</div>
 
-function extendedDegreeLabel(n){return{0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",6:"♯4",7:"5",8:"♭6",9:"6",10:"♭7",11:"7",12:"8",14:"9",17:"11",21:"13"}[n]||"?"}
+    <div class="chords-layout">
 
-function updateKeyBehaviorExplanation(){const m=getScaleMeta();if(!m)return;const{scale:s}=m,r=state.root;document.getElementById("theoryKeyBehavior").textContent=`Being in ${r} ${s.name} means ${r} is the tonic — the home base the whole scale is built around. Playing another note does not change the key; it simply functions as its scale degree. The tonic is not the lowest note you play — it is the note the system is centered on.`}
+      <div class="degree-list" id="degreeList"></div>
 
-const CHORD_FORMULAS={maj:["1","3","5"],min:["1","♭3","5"],dim:["1","♭3","♭5"],aug:["1","3","♯5"],sus2:["1","2","5"],sus4:["1","4","5"],power:["1","5"],maj7:["1","3","5","7"],min7:["1","♭3","5","♭7"],dom7:["1","3","5","♭7"],halfdim7:["1","♭3","♭5","♭7"],dim7:["1","♭3","♭5","6"],add9:["1","3","5","9"],add11:["1","3","5","11"],add13:["1","3","5","13"]};
+      <div class="chord-detail">
 
-function degreeRomanAndQuality(n,s,t){return{roman:(isMajorFamily(t)?["I","ii","iii","IV","V","vi","vii°"]:["i","ii°","III","iv","v","VI","VII"])[s]}}
-function buildHybridChord(r,i,d,c){const f=CHORD_FORMULAS[c]||["1","3","5"],u=buildScale(r,i),l=u[d],a=[];for(const h of f){let o=0;h.includes("♭")&&(o-=1),h.includes("♯")&&(o+=1);const e=parseInt(h.replace("♭","").replace("♯","")),t=(e-1)%7,n=12*Math.floor((e-1)/7);t<i.length?o+=i[t]+n:o+=n;const s=NOTES[(noteIndex(l)+o+120)%12];a.push({label:h,note:s})}return a}
+        <div class="chord-type-select">
+          <label class="label">Chord Type</label>
+          <select id="chordTypeSelect" class="select">
+            <option value="maj">maj</option>
+            <option value="min">min</option>
+            <option value="dim">dim</option>
+            <option value="aug">aug</option>
+            <option value="sus2">sus2</option>
+            <option value="sus4">sus4</option>
+            <option value="power">5 (power)</option>
+            <option value="maj7">maj7</option>
+            <option value="min7">min7</option>
+            <option value="dom7">dom7</option>
+            <option value="halfdim7">half‑dim7</option>
+            <option value="dim7">dim7</option>
+            <option value="add9">add9</option>
+            <option value="add11">add11</option>
+            <option value="add13">add13</option>
+          </select>
+        </div>
 
-function clearAllNoteBubbles(){document.querySelectorAll(".note-info-bubble").forEach(e=>e.remove())}
+        <div class="chord-detail-row">
+          <span class="chord-detail-label">Chord Name:</span>
+          <span id="chordName"></span>
+        </div>
 
-function showNoteInfoBubble(n,s,t){const o=n.querySelector(".note-info-bubble");if(o)return void o.remove();clearAllNoteBubbles();const e=document.createElement("div");e.className="note-info-bubble";const r=document.createElement("div");r.className="note-info-title",r.textContent=s;const i=document.createElement("div");i.className="note-info-text",i.textContent=t,e.appendChild(r),e.appendChild(i),n.appendChild(e)}
+        <div class="chord-detail-row">
+          <span class="chord-detail-label">Formula:</span>
+          <span id="chordFormula"></span>
+        </div>
 
-function getDotExplanation(n,s){const{noteName:t,sol:o,degree:e,familyLabel:r,scaleName:i,isMajor:a}=s;if("tonal"===n)return 0===e?{title:"Tonal Root",text:`${t} is the home base of this scale.`}:{title:"Tonal Anchor",text:`${t} is measured from the root.`};if("mode"===n){const n=["1st degree","2nd degree","3rd degree","4th degree","5th degree","6th degree","7th degree"];return{title:"Mode Dot",text:`${t} is the ${n[e]} of ${i}.`}}return"family"===n?{title:"Family Dot",text:`${i} belongs to the ${r} family.`}:"solfege"===n?{title:`Solfege: ${o}`,text:(a?FEEL_DO[o]:FEEL_LA[o])?.[0]?.text||`${o} describes this note’s role.`}:{title:"Note Info",text:`${t} inside this scale.`}}
+        <div class="chord-detail-row">
+          <span class="chord-detail-label">Chord Tones:</span>
+          <span id="chordTones" class="chord-tones"></span>
+        </div>
 
-function initDegreeModeToggles(){document.querySelectorAll("[data-degmode]").forEach(e=>{const t=e.dataset.degmode;(t===state.degreeMode||"arrows"===t&&state.degreeArrows)&&e.classList.add("active"),e.addEventListener("click",()=>{"arrows"===t?(state.degreeArrows=!state.degreeArrows,e.classList.toggle("active",state.degreeArrows)):(state.degreeMode=t,document.querySelectorAll("[data-degmode]").forEach(e=>{"arrows"!==e.dataset.degmode&&e.classList.remove("active")}),e.classList.add("active")),buildFretboard()})})}
+        <div class="chord-logic-block">
+          <div class="chord-logic-title">Hybrid Chord Logic</div>
+          <div class="chord-logic-line"><strong>Diatonic Base:</strong> Chords begin on the selected scale degree, using the scale’s notes as the foundation.</div>
+          <div class="chord-logic-line"><strong>Chromatic Extensions:</strong> If the chord type requires tones outside the scale (maj7, dom7, aug, dim7, add9, etc.), those tones are added chromatically.</div>
+          <div class="chord-logic-line"><strong>Alteration Handling:</strong> Chromatic tones are labeled with interval notation (♭2, ♯4, ♭6, etc.) and highlighted as altered tones.</div>
+          <div class="chord-logic-line"><strong>Functional Behavior:</strong> Triads and sevenths follow diatonic function; extended and altered chords follow chromatic function.</div>
+          <div class="chord-logic-line"><strong>Prosody Integration:</strong> Chord tones still receive solfege + feel lines based on the underlying scale, even when chromatic tones appear.</div>
+          <div class="chord-logic-line"><strong>Interval Labels:</strong> Every note shows its interval from the scale root: scale tones as diatonic degrees, chromatic tones as chromatic labels.</div>
+        </div>
 
-function initToggles(){document.querySelectorAll(".toggle-row .toggle").forEach(e=>{const t=e.dataset.toggle;t&&state.toggles[t]&&e.classList.add("active"),e.addEventListener("click",()=>{t&&(state.toggles[t]=!state.toggles[t],e.classList.toggle("active",state.toggles[t]),buildFretboard(),updateTheoryPanel(),updateSidePanel(),updateChordPanel())})}),initDegreeModeToggles(),document.addEventListener("click",e=>{e.target.closest(".note-cell")||clearAllNoteBubbles()})}
+      </div>
 
-function initTabs(){const e=document.querySelectorAll(".tab"),t={scales:document.getElementById("tabScales"),pronounce:document.getElementById("tabPronounce"),chords:document.getElementById("tabChords")};e.forEach(o=>{o.addEventListener("click",()=>{const n=o.dataset.tab;e.forEach(e=> 
-          t[e].style.display = e === n ? "block" : "none";
+    </div>
+
+  </div>
+
+</div>
+
+</aside>
+
+</section>
+
+</div>
+<script>
+const NOTES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
+STRINGS=["E","B","G","D","A","E"],
+TOTAL_FRETS=25,
+SCALE_FAMILIES=[
+  {id:"major_modes",label:"Major Modes",familyType:"major",scales:[
+    {id:"ionian",name:"Ionian (Major)",intervals:[0,2,4,5,7,9,11],steps:["W","W","H","W","W","W","H"]},
+    {id:"lydian",name:"Lydian",intervals:[0,2,4,6,7,9,11],steps:["W","W","W","H","W","W","H"]},
+    {id:"mixolydian",name:"Mixolydian",intervals:[0,2,4,5,7,9,10],steps:["W","W","H","W","W","H","W"]}
+  ]},
+  {id:"minor_modes",label:"Minor Modes",familyType:"minor",scales:[
+    {id:"aeolian",name:"Aeolian (Natural Minor)",intervals:[0,2,3,5,7,8,10],steps:["W","H","W","W","H","W","W"]},
+    {id:"dorian",name:"Dorian",intervals:[0,2,3,5,7,9,10],steps:["W","H","W","W","W","H","W"]},
+    {id:"phrygian",name:"Phrygian",intervals:[0,1,3,5,7,8,10],steps:["H","W","W","W","H","W","W"]},
+    {id:"locrian",name:"Locrian",intervals:[0,1,3,5,6,8,10],steps:["H","W","W","H","W","W","W"]}
+  ]},
+  {id:"harmonic_minor",label:"Harmonic Minor",familyType:"minor",scales:[
+    {id:"harmonic_minor",name:"Harmonic Minor",intervals:[0,2,3,5,7,8,11],steps:["W","H","W","W","H","W+H","H"]}
+  ]},
+  {id:"melodic_minor",label:"Melodic Minor",familyType:"minor",scales:[
+    {id:"melodic_minor",name:"Melodic Minor (Jazz)",intervals:[0,2,3,5,7,9,11],steps:["W","H","W","W","W","W","H"]}
+  ]},
+  {id:"dominant_altered",label:"Dominant / Altered",familyType:"minor",scales:[
+    {id:"mixolydian_b9_b13",name:"Mixolydian ♭9 ♭13",intervals:[0,1,3,4,7,8,10],steps:["H","W","H","W+H","H","W+H","H"]},
+    {id:"altered",name:"Altered (Super Locrian)",intervals:[0,1,3,4,6,8,10],steps:["H","W","H","W","W","W","W"]}
+  ]},
+  {id:"symmetric",label:"Symmetric / Diminished",familyType:"neutral",scales:[
+    {id:"whole_tone",name:"Whole Tone",intervals:[0,2,4,6,8,10],steps:["W","W","W","W","W","W"]},
+    {id:"dim_hw",name:"Diminished (H–W)",intervals:[0,1,3,4,6,7,9,10],steps:["H","W","H","W","H","W","H","W"]},
+    {id:"dim_wh",name:"Diminished (W–H)",intervals:[0,2,3,5,6,8,9,11],steps:["W","H","W","H","W","H","W","H"]}
+  ]},
+  {id:"pentatonics",label:"Pentatonics",familyType:"mixed",scales:[
+    {id:"major_pent",name:"Major Pentatonic",intervals:[0,2,4,7,9],steps:["W","W","W+H","W","W+H"]},
+    {id:"minor_pent",name:"Minor Pentatonic",intervals:[0,3,5,7,10],steps:["W+H","W","W","W+H","W"]}
+  ]},
+  {id:"japanese",label:"Japanese / Traditional",familyType:"minor",scales:[
+    {id:"hirajoshi",name:"Hirajoshi",intervals:[0,2,3,7,8],steps:["W+H","H","W+H","H","W+H"]},
+    {id:"in_sen",name:"In Sen",intervals:[0,1,5,7,10],steps:["H","W+H","W","W+H","W"]}
+  ]},
+  {id:"exotic",label:"Exotic / Other",familyType:"minor",scales:[
+    {id:"phrygian_dom",name:"Phrygian Dominant",intervals:[0,1,4,5,7,8,10],steps:["H","W+H","H","W","H","W","W"]}
+  ]}
+];
+const FEEL_DO={
+  Do:[
+    {text:"the home tonic – most stable note",class:"feel-stable"},
+    {text:"everything is resolved here",class:"feel-stable"},
+    {text:"rest, peace",class:"feel-stable"}
+  ],
+  Re:[
+    {text:"supertonic – wants to move somewhere",class:"feel-forward"},
+    {text:"a little tension",class:"feel-forward"},
+    {text:"leans upward or downward",class:"feel-forward"}
+  ],
+  Mi:[
+    {text:"mediant – the sweet third",class:"feel-story"},
+    {text:"neutral in major and minor",class:"feel-story"},
+    {text:"gentle pull toward Fa or Re",class:"feel-story"}
+  ],
+  Fa:[
+    {text:"subdominant – big forward energy",class:"feel-forward"},
+    {text:'"here we go…" feeling',class:"feel-forward"},
+    {text:"leans strongly toward So",class:"feel-forward"}
+  ],
+  So:[
+    {text:"dominant – strongest pull to Do",class:"feel-dominant"},
+    {text:"maximum tension, strong resolution",class:"feel-dominant"},
+    {text:"wants to resolve downward",class:"feel-dominant"}
+  ],
+  La:[
+    {text:"submediant – relative minor feel",class:"feel-story"},
+    {text:"dreamy, storytelling",class:"feel-story"},
+    {text:"floats between So and Ti",class:"feel-story"}
+  ],
+  Ti:[
+    {text:"leading tone – pulls upward to Do",class:"feel-leading"},
+    {text:"bright, urgent tension",class:"feel-leading"},
+    {text:"wants to resolve immediately",class:"feel-leading"}
+  ]
+};
+
+const FEEL_LA={
+  La:[
+    {text:"minor tonic – where the story lives",class:"feel-story"},
+    {text:"restful, serious, final",class:"feel-story"},
+    {text:"resting point",class:"feel-stable"}
+  ],
+  Ti:[
+    {text:"leading tone – tension, longing",class:"feel-leading"},
+    {text:"wants to resolve up to La",class:"feel-leading"},
+    {text:"sweet/bitter color",class:"feel-leading"}
+  ],
+  Do:[
+    {text:"the 3rd – sad color",class:"feel-story"},
+    {text:"emotional weight",class:"feel-story"},
+    {text:"leans down to Ti or up to Re",class:"feel-story"}
+  ],
+  Re:[
+    {text:"dominant (5th) – strong, solid",class:"feel-dominant"},
+    {text:"backbone of minor riffs",class:"feel-dominant"},
+    {text:"pulls toward La",class:"feel-dominant"}
+  ],
+  Mi:[
+    {text:"dark, mysterious",class:"feel-outside"},
+    {text:"a little unstable",class:"feel-outside"},
+    {text:"dramatic moves",class:"feel-outside"}
+  ],
+  Fa:[
+    {text:"slightly outside, bluesy",class:"feel-outside"},
+    {text:"Spanish / phrygian‑tinged",class:"feel-outside"},
+    {text:"slides downward or sideways",class:"feel-outside"}
+  ],
+  So:[
+    {text:"octave of La – full resolution",class:"feel-stable"},
+    {text:"everything feels complete",class:"feel-stable"},
+    {text:"rest, peace",class:"feel-stable"}
+  ]
+};
+
+const state={
+  root:"A",
+  familyId:"minor_modes",
+  scaleId:"aeolian",
+  toggles:{
+    names:true,
+    octaves:true,
+    hz:true,
+    absCents:true,
+    intCents:true,
+    steps:true,
+    doFeel:false,
+    laFeel:true,
+    tonalDot:true,
+    modeDot:true,
+    familyDot:true,
+    chordOverlay:true,
+    intervalHighlight:true,
+    triadShapes:false
+  },
+  chord:{degreeIndex:0,chordType:"min7"},
+  degreeMode:"string",
+  degreeArrows:false
+};
+
+function noteIndex(n){
+  return NOTES.indexOf(
+    n.replace("♯","#").replace("♭","b").split(" / ")[0]
+  );
+}
+function transpose(n,s){
+  return NOTES[(noteIndex(n)+s+120)%12];
+}
+function buildScale(n,s){
+  const r=noteIndex(n);
+  return s.map(e=>NOTES[(r+e)%12]);
+}
+function midiFor(n,s){
+  return 12*(s+1)+noteIndex(n);
+}
+function hzFor(n){
+  return 440*Math.pow(2,(n-69)/12);
+}
+function fmtHz(n){
+  return n.toFixed(1);
+}
+function fmtCents(n){
+  return n===0?"0¢":(n>0?"+":"−")+Math.abs(n).toFixed(0)+"¢";
+}
+function chromaticLabel(n){
+  return {
+    0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",
+    6:"♯4",7:"5",8:"♭6",9:"6",10:"♭7",11:"7"
+  }[(n+120)%12];
+}
+function isMajorFamily(n){
+  return n==="major" ? true : n!=="minor";
+}
+function solfegeForDegree(n,major){
+  const M=["Do","Re","Mi","Fa","So","La","Ti"];
+  const m=["La","Ti","Do","Re","Mi","Fa","So"];
+  return major?M[n]:m[n];
+}
+function getFeelLines(sol, major, toggles){
+  const {doFeel, laFeel} = toggles;
+  if(!doFeel && !laFeel) return [];
+  if(doFeel && !laFeel) return FEEL_DO[sol] || [];
+  if(!doFeel && laFeel) return FEEL_LA[sol] || [];
+  return major ? (FEEL_DO[sol]||[]) : (FEEL_LA[sol]||[]);
+}
+
+function getScaleMeta(){
+  for(const f of SCALE_FAMILIES){
+    for(const s of f.scales){
+      if(s.id===state.scaleId && f.id===state.familyId){
+        return {family:f, scale:s};
+      }
+    }
+  }
+  return null;
+}
+
+function extendedDegreeLabel(n){
+  return {
+    0:"1",1:"♭2",2:"2",3:"♭3",4:"3",5:"4",6:"♯4",7:"5",
+    8:"♭6",9:"6",10:"♭7",11:"7",12:"8",14:"9",17:"11",21:"13"
+  }[n] || "?";
+}
+
+function updateKeyBehaviorExplanation(){
+  const m=getScaleMeta();
+  if(!m) return;
+  const {scale:s} = m;
+  const r=state.root;
+  document.getElementById("theoryKeyBehavior").textContent =
+    `Being in ${r} ${s.name} means ${r} is the tonic — the home base the whole scale is built around. ` +
+    `Playing another note does not change the key; it simply functions as its scale degree. ` +
+    `The tonic is not the lowest note you play — it is the note the system is centered on.`;
+}
+
+const CHORD_FORMULAS={
+  maj:["1","3","5"],
+  min:["1","♭3","5"],
+  dim:["1","♭3","♭5"],
+  aug:["1","3","♯5"],
+  sus2:["1","2","5"],
+  sus4:["1","4","5"],
+  power:["1","5"],
+  maj7:["1","3","5","7"],
+  min7:["1","♭3","5","♭7"],
+  dom7:["1","3","5","♭7"],
+  halfdim7:["1","♭3","♭5","♭7"],
+  dim7:["1","♭3","♭5","6"],
+  add9:["1","3","5","9"],
+  add11:["1","3","5","11"],
+  add13:["1","3","5","13"]
+};
+
+function degreeRomanAndQuality(intervals, index, familyType){
+  return {
+    roman: (
+      isMajorFamily(familyType)
+        ? ["I","ii","iii","IV","V","vi","vii°"]
+        : ["i","ii°","III","iv","v","VI","VII"]
+    )[index]
+  };
+}
+
+function buildHybridChord(root, intervals, degreeIndex, chordType){
+  const formula = CHORD_FORMULAS[chordType] || ["1","3","5"];
+  const scaleNotes = buildScale(root, intervals);
+  const chordRoot = scaleNotes[degreeIndex];
+  const tones = [];
+
+  for(const f of formula){
+    let offset = 0;
+    if(f.includes("♭")) offset -= 1;
+    if(f.includes("♯")) offset += 1;
+
+    const base = parseInt(f.replace("♭","").replace("♯",""));
+    const diatonicIndex = (base - 1) % 7;
+    const octaveOffset = 12 * Math.floor((base - 1) / 7);
+
+    if(diatonicIndex < intervals.length){
+      offset += intervals[diatonicIndex] + octaveOffset;
+    } else {
+      offset += octaveOffset;
+    }
+
+    const note = NOTES[(noteIndex(chordRoot) + offset + 120) % 12];
+    tones.push({label:f, note});
+  }
+
+  return tones;
+}
+
+function clearAllNoteBubbles(){
+  document.querySelectorAll(".note-info-bubble").forEach(b=>b.remove());
+}
+
+function showNoteInfoBubble(cell, title, text){
+  const existing = cell.querySelector(".note-info-bubble");
+  if(existing){ existing.remove(); return; }
+  clearAllNoteBubbles();
+
+  const box=document.createElement("div");
+  box.className="note-info-bubble";
+
+  const t=document.createElement("div");
+  t.className="note-info-title";
+  t.textContent=title;
+
+  const p=document.createElement("div");
+  p.className="note-info-text";
+  p.textContent=text;
+
+  box.appendChild(t);
+  box.appendChild(p);
+  cell.appendChild(box);
+}
+
+function getDotExplanation(type, info){
+  const {noteName, sol, degree, familyLabel, scaleName, isMajor} = info;
+
+  if(type==="tonal"){
+    return degree===0
+      ? {title:"Tonal Root",text:`${noteName} is the home base of this scale.`}
+      : {title:"Tonal Anchor",text:`${noteName} is measured from the root.`};
+  }
+
+  if(type==="mode"){
+    const ord=["1st","2nd","3rd","4th","5th","6th","7th"];
+    return {
+      title:"Mode Dot",
+      text:`${noteName} is the ${ord[degree]} degree of ${scaleName}.`
+    };
+  }
+
+  if(type==="family"){
+    return {
+      title:"Family Dot",
+      text:`${scaleName} belongs to the ${familyLabel} family.`
+    };
+  }
+
+  if(type==="solfege"){
+    const feel = isMajor ? FEEL_DO[sol] : FEEL_LA[sol];
+    return {
+      title:`Solfege: ${sol}`,
+      text: feel?.[0]?.text || `${sol} describes this note’s role.`
+    };
+  }
+
+  return {title:"Note Info",text:`${noteName} inside this scale.`};
+}
+function initDegreeModeToggles(){
+  document.querySelectorAll("[data-degmode]").forEach(btn=>{
+    const mode=btn.dataset.degmode;
+    if(mode===state.degreeMode || (mode==="arrows" && state.degreeArrows)){
+      btn.classList.add("active");
+    }
+    btn.addEventListener("click",()=>{
+      if(mode==="arrows"){
+        state.degreeArrows=!state.degreeArrows;
+        btn.classList.toggle("active",state.degreeArrows);
+      } else {
+        state.degreeMode=mode;
+        document.querySelectorAll("[data-degmode]").forEach(b=>{
+          if(b.dataset.degmode!=="arrows") b.classList.remove("active");
+        });
+        btn.classList.add("active");
+      }
+      buildFretboard();
+    });
+  });
+}
+
+function initToggles(){
+  document.querySelectorAll(".toggle-row .toggle").forEach(t=>{
+    const key=t.dataset.toggle;
+    if(key && state.toggles[key]) t.classList.add("active");
+
+    t.addEventListener("click",()=>{
+      if(!key) return;
+      state.toggles[key]=!state.toggles[key];
+      t.classList.toggle("active",state.toggles[key]);
+      buildFretboard();
+      updateTheoryPanel();
+      updateSidePanel();
+      updateChordPanel();
+    });
+  });
+
+  initDegreeModeToggles();
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".note-cell")) clearAllNoteBubbles();
+  });
+}
+
+function initTabs(){
+  const tabs=document.querySelectorAll(".tab");
+  const contents={
+    scales:document.getElementById("tabScales"),
+    pronounce:document.getElementById("tabPronounce"),
+    chords:document.getElementById("tabChords")
+  };
+
+  tabs.forEach(tab=>{
+    tab.addEventListener("click",()=>{
+      const name=tab.dataset.tab;
+
+      tabs.forEach(t=>t.classList.remove("active"));
+      tab.classList.add("active");
+
+      Object.keys(contents).forEach(k=>{
+        contents[k].style.display = (k===name) ? "block" : "none";
       });
     });
   });
 }
 
-function updateTheoryPanel() {
-  const m = getScaleMeta();
-  if (!m) return;
-  const { family:f, scale:s } = m;
-  const maj = isMajorFamily(f.familyType);
+function updateTheoryPanel(){
+  const m=getScaleMeta();
+  if(!m) return;
+  const {family:f, scale:s}=m;
+  const maj=isMajorFamily(f.familyType);
+
   document.getElementById("theoryName").textContent = `${state.root} ${s.name}`;
   document.getElementById("theoryFamily").textContent = `Family: ${f.label}`;
   document.getElementById("theoryIntervals").textContent = `Intervals: ${s.intervals.join(" ")}`;
   document.getElementById("theorySteps").textContent = `Steps: ${s.steps.join(" – ")}`;
   document.getElementById("theoryFeel").textContent = `Prosody: ${maj ? "Movable‑Do (major)" : "Movable‑La (minor)"}`;
+
   updateKeyBehaviorExplanation();
 }
 
-function updateSidePanel() {
-  const m = getScaleMeta();
-  if (!m) return;
-  const { scale:s } = m;
+function updateSidePanel(){
+  const m=getScaleMeta();
+  if(!m) return;
+  const {scale:s}=m;
+
   document.getElementById("sideCurrent").textContent = `${state.root} ${s.name}`;
   document.getElementById("sideIntervals").textContent = `Intervals: ${s.intervals.join(" ")}`;
   document.getElementById("sideSteps").textContent = `Steps: ${s.steps.join(" – ")}`;
 }
 
-function initChordPanel() {
-  const sel = document.getElementById("chordTypeSelect");
-  sel.value = state.chord.chordType;
-  sel.addEventListener("change", () => {
-    state.chord.chordType = sel.value;
+function initChordPanel(){
+  const sel=document.getElementById("chordTypeSelect");
+  sel.value=state.chord.chordType;
+
+  sel.addEventListener("change",()=>{
+    state.chord.chordType=sel.value;
     buildFretboard();
     updateChordPanel();
   });
+
   buildDegreeList();
   updateChordPanel();
 }
 
-function buildDegreeList() {
-  const m = getScaleMeta();
-  if (!m) return;
-  const { family:f, scale:s } = m;
-  const list = document.getElementById("degreeList");
-  list.innerHTML = "";
-  const scaleNotes = buildScale(state.root, s.intervals);
+function buildDegreeList(){
+  const m=getScaleMeta();
+  if(!m) return;
+  const {family:f, scale:s}=m;
 
-  for (let i = 0; i < scaleNotes.length; i++) {
-    const roman = degreeRomanAndQuality(s.intervals, i, f.familyType).roman;
-    const note = scaleNotes[i];
-    const label = ["Tonic","Supertonic","Mediant","Subdominant","Dominant","Submediant","Leading Tone"][i] || "";
+  const list=document.getElementById("degreeList");
+  list.innerHTML="";
 
-    const item = document.createElement("div");
-    item.className = "degree-item" + (i === state.chord.degreeIndex ? " active" : "");
-    item.dataset.index = i;
+  const scaleNotes=buildScale(state.root, s.intervals);
 
-    const main = document.createElement("div");
-    main.className = "degree-main";
-    main.innerHTML = `<span>${roman}</span><span>${note}</span>`;
+  for(let i=0;i<scaleNotes.length;i++){
+    const roman=degreeRomanAndQuality(s.intervals,i,f.familyType).roman;
+    const note=scaleNotes[i];
+    const label=["Tonic","Supertonic","Mediant","Subdominant","Dominant","Submediant","Leading Tone"][i] || "";
 
-    const sub = document.createElement("div");
-    sub.className = "degree-sub";
-    sub.textContent = label;
+    const item=document.createElement("div");
+    item.className="degree-item" + (i===state.chord.degreeIndex ? " active" : "");
+    item.dataset.index=i;
+
+    const main=document.createElement("div");
+    main.className="degree-main";
+    main.innerHTML=`<span>${roman}</span><span>${note}</span>`;
+
+    const sub=document.createElement("div");
+    sub.className="degree-sub";
+    sub.textContent=label;
 
     item.appendChild(main);
     item.appendChild(sub);
 
-    item.addEventListener("click", () => {
-      state.chord.degreeIndex = i;
-      document.querySelectorAll(".degree-item").forEach(x => x.classList.remove("active"));
+    item.addEventListener("click",()=>{
+      state.chord.degreeIndex=i;
+      document.querySelectorAll(".degree-item").forEach(x=>x.classList.remove("active"));
       item.classList.add("active");
       buildFretboard();
       updateChordPanel();
@@ -930,205 +1151,212 @@ function buildDegreeList() {
   }
 }
 
-function updateChordPanel() {
-  const m = getScaleMeta();
-  if (!m) return;
-  const { family:f, scale:s } = m;
-  const scaleNotes = buildScale(state.root, s.intervals);
-  const idx = state.chord.degreeIndex;
-  const rootNote = scaleNotes[idx];
-  const roman = degreeRomanAndQuality(s.intervals, idx, f.familyType).roman;
-  const type = state.chord.chordType;
-  const formula = CHORD_FORMULAS[type] || ["1","3","5"];
-  const tones = buildHybridChord(state.root, s.intervals, idx, type);
+function updateChordPanel(){
+  const m=getScaleMeta();
+  if(!m) return;
+  const {family:f, scale:s}=m;
+
+  const scaleNotes=buildScale(state.root, s.intervals);
+  const idx=state.chord.degreeIndex;
+  const rootNote=scaleNotes[idx];
+  const roman=degreeRomanAndQuality(s.intervals,idx,f.familyType).roman;
+  const type=state.chord.chordType;
+  const formula=CHORD_FORMULAS[type] || ["1","3","5"];
+  const tones=buildHybridChord(state.root, s.intervals, idx, type);
 
   document.getElementById("chordName").textContent = `${rootNote} ${type} (${roman})`;
   document.getElementById("chordFormula").textContent = formula.join(" – ");
-  document.getElementById("chordTones").textContent = tones.map(t => `${t.note} (${t.label})`).join(", ");
+  document.getElementById("chordTones").textContent = tones.map(t=>`${t.note} (${t.label})`).join(", ");
 
   buildDegreeList();
 }
+function buildFretboard(){
+  const fb=document.getElementById("fretboard");
+  fb.innerHTML="";
 
-function buildFretboard() {
-  const fb = document.getElementById("fretboard");
-  fb.innerHTML = "";
-  const m = getScaleMeta();
-  if (!m) return;
-  const { family:f, scale:s } = m;
-  const maj = isMajorFamily(f.familyType);
-  const scaleNotes = buildScale(state.root, s.intervals);
-  const rootIndex = noteIndex(state.root);
+  const m=getScaleMeta();
+  if(!m) return;
+  const {family:f, scale:s}=m;
+  const maj=isMajorFamily(f.familyType);
+
+  const scaleNotes=buildScale(state.root, s.intervals);
+  const rootIndex=noteIndex(state.root);
 
   updateStepsPanel(s.steps);
 
-  for (let fret = 0; fret < TOTAL_FRETS; fret++) {
-    const row = document.createElement("div");
-    row.className = "fret-row";
+  for(let fret=0; fret<TOTAL_FRETS; fret++){
+    const row=document.createElement("div");
+    row.className="fret-row";
 
-    const num = document.createElement("div");
-    num.className = "fret-number";
-    num.textContent = fret;
+    const num=document.createElement("div");
+    num.className="fret-number";
+    num.textContent=fret;
     row.appendChild(num);
 
-    for (let st = 0; st < STRINGS.length; st++) {
-      const open = STRINGS[st];
-      const base = noteIndex(open);
-      const idx = (base + fret) % 12;
-      const note = NOTES[idx];
-      const midi = midiFor(note, 3 + Math.floor((base + fret) / 12));
-      const hz = hzFor(midi);
-      const inScale = scaleNotes.includes(note);
-      const degree = inScale ? scaleNotes.indexOf(note) : -1;
+    for(let st=0; st<STRINGS.length; st++){
+      const open=STRINGS[st];
+      const base=noteIndex(open);
+      const idx=(base+fret)%12;
+      const note=NOTES[idx];
+      const midi=midiFor(note, 3 + Math.floor((base+fret)/12));
+      const hz=hzFor(midi);
+      const inScale=scaleNotes.includes(note);
+      const degree=inScale ? scaleNotes.indexOf(note) : -1;
 
-      const cell = document.createElement("div");
-      cell.className = "note-cell";
+      const cell=document.createElement("div");
+      cell.className="note-cell";
 
-      /* tonal dot */
-      if (state.toggles.tonalDot && degree === 0) {
-        const d = document.createElement("div");
-        d.className = "dot-root";
-        d.addEventListener("click", () => {
-          const info = {
-            noteName: note,
-            sol: solfegeForDegree(degree, maj),
+      if(state.toggles.tonalDot && degree===0){
+        const d=document.createElement("div");
+        d.className="dot-root";
+        d.addEventListener("click",()=>{
+          const info={
+            noteName:note,
+            sol:solfegeForDegree(degree,maj),
             degree,
-            familyLabel: f.label,
-            scaleName: s.name,
-            isMajor: maj
+            familyLabel:f.label,
+            scaleName:s.name,
+            isMajor:maj
           };
-          const ex = getDotExplanation("tonal", info);
-          showNoteInfoBubble(cell, ex.title, ex.text);
+          const ex=getDotExplanation("tonal",info);
+          showNoteInfoBubble(cell,ex.title,ex.text);
         });
         cell.appendChild(d);
       }
 
-      /* mode dot */
-      if (state.toggles.modeDot && inScale) {
-        const d = document.createElement("div");
-        d.className = "dot-scale";
-        d.addEventListener("click", () => {
-          const info = {
-            noteName: note,
-            sol: solfegeForDegree(degree, maj),
+      if(state.toggles.modeDot && inScale){
+        const d=document.createElement("div");
+        d.className="dot-scale";
+        d.addEventListener("click",()=>{
+          const info={
+            noteName:note,
+            sol:solfegeForDegree(degree,maj),
             degree,
-            familyLabel: f.label,
-            scaleName: s.name,
-            isMajor: maj
+            familyLabel:f.label,
+            scaleName:s.name,
+            isMajor:maj
           };
-          const ex = getDotExplanation("mode", info);
-          showNoteInfoBubble(cell, ex.title, ex.text);
+          const ex=getDotExplanation("mode",info);
+          showNoteInfoBubble(cell,ex.title,ex.text);
         });
         cell.appendChild(d);
       }
 
-      /* family dot */
-      if (state.toggles.familyDot && inScale) {
-        const d = document.createElement("div");
-        d.className = "dot-family";
-        d.addEventListener("click", () => {
-          const info = {
-            noteName: note,
-            sol: solfegeForDegree(degree, maj),
+      if(state.toggles.familyDot && inScale){
+        const d=document.createElement("div");
+        d.className="dot-family";
+        d.addEventListener("click",()=>{
+          const info={
+            noteName:note,
+            sol:solfegeForDegree(degree,maj),
             degree,
-            familyLabel: f.label,
-            scaleName: s.name,
-            isMajor: maj
+            familyLabel:f.label,
+            scaleName:s.name,
+            isMajor:maj
           };
-          const ex = getDotExplanation("family", info);
-          showNoteInfoBubble(cell, ex.title, ex.text);
+          const ex=getDotExplanation("family",info);
+          showNoteInfoBubble(cell,ex.title,ex.text);
         });
         cell.appendChild(d);
       }
 
-      /* interval highlight */
-      if (state.toggles.intervalHighlight && inScale) {
+      if(state.toggles.intervalHighlight && inScale){
         cell.classList.add("interval-highlight");
       }
 
-      /* chord overlay */
-      if (state.toggles.chordOverlay) {
-        const tones = buildHybridChord(state.root, s.intervals, state.chord.degreeIndex, state.chord.chordType).map(t => t.note);
-        if (tones.includes(note)) cell.classList.add("chord-note");
+      if(state.toggles.chordOverlay){
+        const tones=buildHybridChord(
+          state.root,
+          s.intervals,
+          state.chord.degreeIndex,
+          state.chord.chordType
+        ).map(t=>t.note);
+
+        if(tones.includes(note)) cell.classList.add("chord-note");
       }
 
-      /* triad shapes */
-      if (state.toggles.triadShapes) {
-        const triad = buildHybridChord(state.root, s.intervals, state.chord.degreeIndex, state.chord.chordType);
-        const r = triad[0]?.note;
-        const t = triad[1]?.note;
-        const f5 = triad[2]?.note;
-        if (note === r) cell.classList.add("triad-root");
-        else if (note === t) cell.classList.add("triad-third");
-        else if (note === f5) cell.classList.add("triad-fifth");
+      if(state.toggles.triadShapes){
+        const triad=buildHybridChord(
+          state.root,
+          s.intervals,
+          state.chord.degreeIndex,
+          state.chord.chordType
+        );
+        const r=triad[0]?.note;
+        const t=triad[1]?.note;
+        const f5=triad[2]?.note;
+
+        if(note===r) cell.classList.add("triad-root");
+        else if(note===t) cell.classList.add("triad-third");
+        else if(note===f5) cell.classList.add("triad-fifth");
       }
 
-      /* names */
-      if (state.toggles.names) {
-        const n = document.createElement("div");
-        n.className = "note-name";
-        n.textContent = note;
+      if(state.toggles.names){
+        const n=document.createElement("div");
+        n.className="note-name";
+        n.textContent=note;
         cell.appendChild(n);
       }
 
-      /* interval label */
-      if (state.toggles.names && inScale) {
-        const iv = document.createElement("div");
-        iv.className = "note-interval";
-        iv.textContent = chromaticLabel((idx - rootIndex + 120) % 12);
+      if(state.toggles.names && inScale){
+        const iv=document.createElement("div");
+        iv.className="note-interval";
+        iv.textContent=chromaticLabel((idx-rootIndex+120)%12);
         cell.appendChild(iv);
       }
 
-      /* solfege + feel */
-      if (state.toggles.names && inScale) {
-        const sol = solfegeForDegree(degree, maj);
-        const sdiv = document.createElement("div");
-        sdiv.className = "note-solfege";
-        sdiv.textContent = sol;
-        sdiv.addEventListener("click", () => {
-          const info = {
-            noteName: note,
+      if(state.toggles.names && inScale){
+        const sol=solfegeForDegree(degree,maj);
+        const sdiv=document.createElement("div");
+        sdiv.className="note-solfege";
+        sdiv.textContent=sol;
+
+        sdiv.addEventListener("click",()=>{
+          const info={
+            noteName:note,
             sol,
             degree,
-            familyLabel: f.label,
-            scaleName: s.name,
-            isMajor: maj
+            familyLabel:f.label,
+            scaleName:s.name,
+            isMajor:maj
           };
-          const ex = getDotExplanation("solfege", info);
-          showNoteInfoBubble(cell, ex.title, ex.text);
+          const ex=getDotExplanation("solfege",info);
+          showNoteInfoBubble(cell,ex.title,ex.text);
         });
+
         cell.appendChild(sdiv);
 
-        getFeelLines(sol, maj, state.toggles).forEach(fl => {
-          const fd = document.createElement("div");
-          fd.className = `note-feel-line ${fl.class}`;
-          fd.textContent = fl.text;
+        getFeelLines(sol,maj,state.toggles).forEach(fl=>{
+          const fd=document.createElement("div");
+          fd.className=`note-feel-line ${fl.class}`;
+          fd.textContent=fl.text;
           cell.appendChild(fd);
         });
       }
 
-      /* degree labels */
-      if (state.toggles.steps && inScale) {
-        const iv = (idx - rootIndex + 120) % 12;
-        const lbl = extendedDegreeLabel(iv);
-        const div = document.createElement("div");
-        div.className = "scale-degree-label";
-        div.textContent = lbl;
+      if(state.toggles.steps && inScale){
+        const iv=(idx-rootIndex+120)%12;
+        const lbl=extendedDegreeLabel(iv);
+        const div=document.createElement("div");
+        div.className="scale-degree-label";
+        div.textContent=lbl;
         cell.appendChild(div);
       }
 
-      /* bottom info */
-      if (state.toggles.hz || state.toggles.absCents || state.toggles.intCents) {
-        const b = document.createElement("div");
-        b.className = "note-bottom";
-        const arr = [];
-        if (state.toggles.hz) arr.push(fmtHz(hz) + "Hz");
-        if (state.toggles.absCents) arr.push(fmtCents(100 * (midi - 69)));
-        if (state.toggles.intCents && inScale) {
-          const base = s.intervals[degree];
-          const iv = (idx - rootIndex + 120) % 12;
-          arr.push(fmtCents(100 * (iv - base)));
+      if(state.toggles.hz || state.toggles.absCents || state.toggles.intCents){
+        const b=document.createElement("div");
+        b.className="note-bottom";
+        const arr=[];
+
+        if(state.toggles.hz) arr.push(fmtHz(hz)+"Hz");
+        if(state.toggles.absCents) arr.push(fmtCents(100*(midi-69)));
+        if(state.toggles.intCents && inScale){
+          const base=s.intervals[degree];
+          const iv=(idx-rootIndex+120)%12;
+          arr.push(fmtCents(100*(iv-base)));
         }
-        b.textContent = arr.join(" ");
+
+        b.textContent=arr.join(" ");
         cell.appendChild(b);
       }
 
@@ -1149,7 +1377,6 @@ function updateStepsPanel(steps){
     p.style.display="none";
   }
 }
-
 function initSelectors(){
   const r=document.getElementById("rootSelect");
   NOTES.forEach(n=>{
@@ -1159,6 +1386,7 @@ function initSelectors(){
     r.appendChild(o);
   });
   r.value=state.root;
+
   r.addEventListener("change",()=>{
     state.root=r.value;
     buildFretboard();
@@ -1178,6 +1406,7 @@ function initSelectors(){
   });
 
   s.value=`${state.familyId}:${state.scaleId}`;
+
   s.addEventListener("change",()=>{
     const [fid,sid]=s.value.split(":");
     state.familyId=fid;
